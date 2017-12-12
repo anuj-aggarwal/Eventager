@@ -1,0 +1,35 @@
+user: {
+	"username": "String",
+	"Name": "String",
+	"Phone-number": "String",
+	"password": "String",
+	"email": "String",
+	"events-organizing": [event_id],
+	"events-attending": [event_id]
+}
+
+event: {
+	"name": "String",
+	"description": "String",
+	"category": "String",
+	"tags": ["String"],
+	"ticket-price": "Number",
+	"date-time": "Time",
+	"duration": "Time",
+	"venue": "String",
+	"organizers": [user_id],
+	"people-attending": [user_id],
+	"discussion": discussion_id
+}
+
+discussion: {
+	"event": event_id,
+	"comments": [{
+		"user": user_id,
+		"body": "String",
+		"replies": [{
+		    "user": user_id,
+		    "body": "String"
+		}]
+	}]
+}

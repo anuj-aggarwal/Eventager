@@ -1,3 +1,6 @@
 .floo
 .flooignore
 .idea/
+node_modules/
+data/
+config.js

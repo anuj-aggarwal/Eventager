@@ -24,10 +24,3 @@ mongoose.connect(`mongodb://${config.DB.HOST}:${config.DB.PORT}/${config.DB.NAME
 });
 
 module.exports = {User, Event, Discussion};
-
-User.create({
-    name: "Anuj Aggarwal"
-});
-Event.create({
-    name: "Event"
-});

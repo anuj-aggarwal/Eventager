@@ -17,6 +17,9 @@ const Passport = require("./passport");
 const app = express();
 
 
+// Set View Engine to ejs
+app.set("view engine", "ejs");
+
 // MIDDLEWARES
 // Body Parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -47,10 +50,18 @@ function checkLoggedIn(req, res, next) {
 
 
 // ROUTES
-// Serve static files at root: html added as fallback extension
-app.use('/', express.static(path.join(__dirname, 'public_static'), {
-    extensions: ['html']
-}));
+// Serve static files at root
+app.use('/', express.static(path.join(__dirname, 'public_static')));
+
+// GET Request for Index Page
+app.get('/', (req,res)=>{
+    res.render('index');
+});
+
+// GET ROUTE For Login/Signup Page
+app.get('/loginsignup', (req,res)=>{
+    res.render('loginsignup');
+});
 
 // POST Request for Logging In
 app.post('/login', Passport.authenticate('local', {

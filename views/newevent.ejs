@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventager|New Event</title>
+
+    <link rel="stylesheet" href="/css/newevent.css">
+</head>
+
+<body>
+
+<h1>Create New Event</h1>
+<form action="/events" method="POST">
+    <input type="text" name="name" placeholder="Name" required>
+    <textarea name="description" cols="30" rows="10" placeholder="Description" required></textarea>
+    <input type="number" name="ticketPrice" placeholder="Ticket Price">
+    <input type="datetime-local" name="dateTime" placeholder="Date" required>
+    <input type="number" name="duration" placeholder="Duration in Hrs.">
+    <input type="text" name="venue" placeholder="Venue" required>
+    <button id="">Create new Event</button>
+</form>
+
+</body>
+</html>

@@ -50,6 +50,10 @@ function checkLoggedIn(req, res, next) {
 
 
 // ROUTES
+// Routers
+app.use("/events", require('./routes/event'));
+
+
 // Serve static files at root
 app.use('/', express.static(path.join(__dirname, 'public_static')));
 

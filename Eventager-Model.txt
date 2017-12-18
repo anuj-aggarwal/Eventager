@@ -19,17 +19,15 @@ event: {
 	"venue": "String",
 	"organizers": [user_id],
 	"people-attending": [user_id],
-	"discussion": discussion_id
+	"comments": [comment_id]
 }
 
-discussion: {
+comment: {
 	"event": event_id,
-	"comments": [{
-		"user": user_id,
-		"body": "String",
-		"replies": [{
-		    "user": user_id,
-		    "body": "String"
-		}]
-	}]
+    "user": user_id,
+    "body": "String",
+    "replies": [{
+        "user": user_id,
+        "body": "String"
+    }]
 }

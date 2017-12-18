@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 // Require all Models
 const User = require("./user");
 const Event = require("./event");
-const Discussion = require("./discussion");
+const Comment = require("./comment");
 
 // DB Config File
 const config = require("../config");
@@ -23,4 +23,4 @@ mongoose.connect(`mongodb://${config.DB.HOST}:${config.DB.PORT}/${config.DB.NAME
     console.log(`Error starting Database: ${err}`)
 });
 
-module.exports = {User, Event, Discussion};
+module.exports = {User, Event, Comment};

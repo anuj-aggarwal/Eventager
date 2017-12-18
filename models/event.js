@@ -20,10 +20,10 @@ const eventSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     }],
-    discussion: {
+    comments: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "discussion"
-    }
+        ref: "comment"
+    }]
 });
 
 // Create and export Event model

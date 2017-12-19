@@ -13,7 +13,10 @@ route.get('/new', (req, res) => {
 // POST Route for New Event
 route.post("/", (req, res) => {
     // Create a new Event
-    models.Event.create(req.body)
+    models.Event.create({
+        ...req.body,
+        organizers: [req.user._id]
+    })
     .then((event) => {
         // Redirect to the new Event Page
         res.redirect(`/events/${event._id}`);

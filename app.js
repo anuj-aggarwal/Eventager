@@ -69,8 +69,8 @@ app.get('/loginsignup', (req,res)=>{
 
 // POST Request for Logging In
 app.post('/login', Passport.authenticate('local', {
-    successRedirect: '/success',
-    failureRedirect: '/failure'
+    successRedirect: '/',
+    failureRedirect: '/loginsignup'
 }));
 
 // POST Request for Sign Up
@@ -89,8 +89,8 @@ app.post('/signup', (req, res, next) => {
         // If User created successfully
         // Log the user in
         Passport.authenticate("local", {
-            successRedirect: "/success",
-            failureRedirect: "/failure"
+            successRedirect: "/",
+            failureRedirect: "/loginsignup"
         })(req, res, next);
     })
     .catch((err)=>{

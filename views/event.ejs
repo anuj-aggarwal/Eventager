@@ -1,26 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Title of Page -->
+    <title><%= event.name %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/event.css" rel="stylesheet">
+
+    <!-- jQuery JS -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+
 </head>
+
 <body>
 
-<h2><%= event.name %></h2>
-<p>Description: <%= event.description %></p>
-<p>Ticket Price: <%= event.ticketPrice %></p>
-<p>Time: <%= event.dateTime %></p>
-<p>Duration: <%= event.duration %></p>
-<p>Venue: <%= event.venue %></p>
-<div>
-    Organizers:
-    <% event.organizers.forEach((organizer) => { %>
-        <p><%= oraganizer %></p>
-    <% }) %>
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Event Heading -->
+    <h1 class="my-4">
+        <%= event.name %>
+        <!-- Attending People Badge -->
+        <span class="badge badge-pill badge-danger"><%= event.peopleAttending.length %></span>
+    </h1>
+
+    <!-- Event Content -->
+    <div class="row">
+        <!-- Event Image -->
+        <div class="col-md-8">
+            <img class="img-fluid" src="http://placehold.it/750x400" alt="Event Image here">
+        </div>
+
+        <!-- Event Details -->
+        <div class="col-md-4">
+            <!-- Description-->
+            <p><%= event.description %></p>
+            <ul>
+                <!-- Ticket Price -->
+                <li>
+                    <b>Ticket Price:</b>
+                    ₹ <%= event.ticketPrice %>
+                </li>
+                <!-- Time -->
+                <li>
+                    <b>Time: </b>
+                    <%= event.dateTime %>
+                </li>
+                <!-- Duration -->
+                <li>
+                    <b>Duration: </b>
+                    <%= event.duration %>
+                </li>
+                <!-- Venue -->
+                <li>
+                    <b>Venue: </b>
+                    <%= event.venue %>
+                </li>
+                <!-- Organizers -->
+                <li>
+                    <b>Organizers: </b>
+                    <ul>
+                        <% event.organizers.forEach((organizer) => { %>
+                            <li><%= oraganizer %></li>
+                        <% }) %>
+                    </ul>
+                </li>
+            </ul>
+        </div>  <!-- END Details -->
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-4 offset-4">
+            <button class="btn btn-block btn-primary">Load Comments</button>
+        </div>
+    </div>
+
 </div>
-
-<p>Number of people Attending: <%= event.peopleAttending.length %></p>
-
 
 </body>
 </html>

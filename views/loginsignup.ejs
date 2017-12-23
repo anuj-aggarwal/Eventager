@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Eventager</title>
+
+    <!-- Include Common Files -->
+    <% include ./partials/header.ejs %>
+
 </head>
 <body>
+
+<!-- NAVBAR -->
+<% include ./partials/navbar.ejs %>
 
 <form action="/login" method="post">
     <label for="login-username">Username: </label>

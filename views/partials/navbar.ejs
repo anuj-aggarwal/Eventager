@@ -1,0 +1,63 @@
+<!-- NavBar-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+    <div id="navbar-container" class="container-fluid">
+        <!-- Navbar Brand Heading -->
+        <a id="navbar-brand" class="h1" href="/">
+            <i class="fa fa-calendar"></i>
+            Eventager
+        </a>
+        <!-- Menu Button for Small Screens -->
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+            Menu
+            <i class="fa fa-bars"></i>
+        </button>
+
+        <!-- Navbar Menu (same as Collapse Menu also) -->
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <!-- EVENTS Dropdown -->
+                <li class="nav-item dropdown">
+                    <!-- Dropdown -->
+                    <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Events
+                    </a>
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu" aria-labelledby="eventsDropdown">
+                        <a class="dropdown-item" href="#">Trending Events</a>
+                        <a class="dropdown-item" href="#">Recent Events</a>
+                        <a class="dropdown-item" href="#">All Events</a>
+                    </div>
+                </li>
+
+                <!-- Login/Signup or Hi, User! -->
+                <!-- Display Login/Signup if not logged in -->
+                <% if(!user) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/loginsignup">Login/SignUp</a>
+                </li>
+                <!-- Display User Dropdown if Logged in -->
+                <% } else { %>
+                <li class="nav-item dropdown">
+                    <!-- Dropdown -->
+                    <a class="nav-link dropdown-toggle" href="#" id="welcomeDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Hi <%= user.username %>!
+                    </a>
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu" aria-labelledby="welcomeDropdown">
+                        <a class="dropdown-item" href="#">Your Events</a>
+                        <a class="dropdown-item" href="/events/new">Create an Event</a>
+                        <a class="dropdown-item" href="#">Events to Attend</a>
+                        <a class="dropdown-item" href="#">Settings</a>
+                        <a class="dropdown-item" href="#">Logout</a>
+                    </div>
+                </li>
+                <% } %>
+            </ul>
+        </div>
+        <!-- END Navbar Menu -->
+    </div>
+</nav>

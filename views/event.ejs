@@ -8,20 +8,18 @@
     <!-- Title of Page -->
     <title><%= event.name %></title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include Common Files -->
+    <% include ./partials/header.ejs %>
 
     <!-- Custom styles for this template -->
     <link href="/css/event.css" rel="stylesheet">
 
-    <!-- jQuery JS -->
-    <script src="/lib/jquery/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
-
 </head>
 
 <body>
+
+<!-- NAVBAR -->
+<% include ./partials/navbar.ejs %>
 
 <!-- Page Content -->
 <div class="container">

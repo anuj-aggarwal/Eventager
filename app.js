@@ -49,6 +49,12 @@ function checkLoggedIn(req, res, next) {
 }
 
 
+// Use user for all renders
+app.use((req, res, next)=>{
+    res.locals.user= req.user;
+    next();
+});
+
 // ROUTES
 // Routers
 app.use("/events", require('./routes/event'));

@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <title>Eventager|New Event</title>
 
+    <!-- Include Common Files -->
+    <% include ./partials/header.ejs %>
+
     <link rel="stylesheet" href="/css/newevent.css">
 </head>
 
 <body>
+
+<!-- NAVBAR -->
+<% include ./partials/navbar.ejs %>
 
 <h1>Create New Event</h1>
 <form action="/events" method="POST">

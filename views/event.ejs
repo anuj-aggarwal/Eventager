@@ -35,55 +35,134 @@
 
     <!-- Event Content -->
     <div class="row">
-        <!-- Event Image -->
         <div class="col-md-8">
+            <!-- Event Image -->
             <img class="img-fluid" src="http://placehold.it/750x400" alt="Event Image here">
+
+            <!-- Event Description Card -->
+            <div class="card mt-4">
+                <h2 class="pl-4 pt-2 card-title">Description</h2>
+                <hr class="my-0 styled">
+                <div class="card-body p-2 pt-2">
+                    <%= event.description %>
+                </div>
+            </div>
+
+            <!-- Comments Card -->
+            <div class="card mt-4">
+                <h2 class="pt-2 px-4 card-title">Comments</h2>
+                <hr class="my-0 styled">
+
+                <!-- Comments -->
+                <div class="card-body px-3 pt-4">
+                    <!-- Comment -->
+                    <div class="media mb-4">
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0">Commenter Name</h5>
+                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
+                            Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc
+                            ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                        </div>
+                    </div>
+
+                    <div class="media mb-4">
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0">Commenter Name</h5>
+                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
+                            Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc
+                            ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+
+                            <div class="media mt-4">
+                                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                                <div class="media-body">
+                                    <h5 class="mt-0">Commenter Name</h5>
+                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
+                                    sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
+                                    Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in
+                                    faucibus.
+                                </div>
+                            </div>
+
+                            <div class="media mt-4">
+                                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                                <div class="media-body">
+                                    <h5 class="mt-0">Commenter Name</h5>
+                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
+                                    sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
+                                    Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in
+                                    faucibus.
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Load More Comments Button -->
+                    <button class="btn btn-block btn-primary">Load more Comments</button>
+
+                </div>
+            </div>
+
+            <!-- Comments Form -->
+            <div class="card my-4">
+                <h5 class="card-header">Leave a Comment:</h5>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>  <!-- END Comments Form -->
         </div>
 
-        <!-- Event Details -->
-        <div class="col-md-4">
-            <!-- Description-->
-            <p><%= event.description %></p>
-            <ul>
-                <!-- Ticket Price -->
-                <li>
-                    <b>Ticket Price:</b>
-                    ₹ <%= event.ticketPrice %>
-                </li>
-                <!-- Time -->
-                <li>
-                    <b>Time: </b>
-                    <%= event.dateTime %>
-                </li>
-                <!-- Duration -->
-                <li>
-                    <b>Duration: </b>
-                    <%= event.duration %>
-                </li>
-                <!-- Venue -->
-                <li>
-                    <b>Venue: </b>
-                    <%= event.venue %>
-                </li>
-                <!-- Organizers -->
-                <li>
-                    <b>Organizers: </b>
+        <!-- Details and SideCard -->
+        <div class="col-4">
+            <!-- Details Card -->
+            <div class="card">
+                <h2 class="pt-3 pl-4 card-title">
+                    Details
+                </h2>
+                <div class="card-body">
+                    <!-- Event Details -->
                     <ul>
-                        <% event.organizers.forEach((organizer) => { %>
-                            <li><%= organizer %></li>
-                        <% }) %>
+                        <!-- Ticket Price -->
+                        <li>
+                            <b>Ticket Price:</b>
+                            ₹ <%= event.ticketPrice %>
+                        </li>
+                        <!-- Time -->
+                        <li>
+                            <b>Time: </b>
+                            <%= event.dateTime %>
+                        </li>
+                        <!-- Duration -->
+                        <li>
+                            <b>Duration: </b>
+                            <%= event.duration %>
+                        </li>
+                        <!-- Venue -->
+                        <li>
+                            <b>Venue: </b>
+                            <%= event.venue %>
+                        </li>
+                        <!-- Organizers -->
+                        <li>
+                            <b>Organizers: </b>
+                            <ul>
+                                <% event.organizers.forEach((organizer) => { %>
+                                <li><%= organizer %></li>
+                                <% }) %>
+                            </ul>
+                        </li>
                     </ul>
-                </li>
-            </ul>
-        </div>  <!-- END Details -->
+                </div>
+            </div>
+        </div>  <!-- END SideCard -->
     </div>
-
-    <div class="row mt-3">
-        <div class="col-4 offset-4">
-            <button class="btn btn-block btn-primary">Load Comments</button>
-        </div>
-    </div>
-
 </div>
 
 </body>

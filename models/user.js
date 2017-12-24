@@ -17,6 +17,8 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "event"
     }
+}, {
+    usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });
 
 // Create and export User model

@@ -24,6 +24,8 @@ const eventSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "comment"
     }]
+}, {
+    usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });
 
 // Create and export Event model

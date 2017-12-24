@@ -20,6 +20,8 @@ const commentSchema = mongoose.Schema({
         },
         body: String
     }]
+}, {
+    usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });
 
 // Create and export Comment model

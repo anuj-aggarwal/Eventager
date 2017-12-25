@@ -30,6 +30,34 @@ route.post('/', (req,res)=>{
     });
 });
 
+// PATCH Request for updating a comment's Body
+route.patch('/:id', (req,res)=>{
+    // Find the comment and update the body of comment
+    models.Comment.findByIdAndUpdate(req.params.id, {
+        body: req.body.body
+    })
+    .then((comment)=>{
+        // Send the new comment to user
+        res.send(comment);
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+});
+
+// DELETE Request for deleting a comment
+route.delete('/:id', (req, res)=>{
+    // Find the comment and delete it
+    models.Comment.findByIdAndRemove(req.params.id)
+        .then((comment)=>{
+            // Send the deleted comment to the user
+            console.log("Deleted: " + comment);
+            res.send(comment);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+});
 
 // Export the Router
 module.exports = route;

@@ -8,17 +8,24 @@ hr.styled {
     background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
 }
 
-/* Reply Buttons in comments and Show Reply Button */
-.reply-button, .show-replies {
+/* Reply Buttons in comments,
+   Show Reply Button,
+    Edit Buttons            */
+.actions {
     font-size: 0.8rem;
     letter-spacing: 0.5px;
     color: #0000ff !important;
     margin-right: 5px;
 }
-.reply-button:hover, .show-replies:hover {
+.actions:hover {
     color: #6c6cec !important;
     cursor: pointer !important;
     text-decoration: underline !important;
+}
+
+/* Edit Buttons */
+.edit-button, .delete-button {
+    font-size: 1.4rem;
 }
 
 /* Hide the Reply Form in Starting */

@@ -43,13 +43,17 @@ function appendComment(commentBox, comment) {
             <!-- Comment Body -->
             <div class="media-body">
                 <!-- Username -->
-                <h5 class="mt-0">${comment.user.username}</h5>
+                <h5 class="mt-0">
+                    ${comment.user.username}
+                    <a class="pull-right actions delete-button"><i class="fa fa-trash-o"></i></a>
+                    <a class="pull-right actions edit-button"><i class="fa fa-pencil-square-o"></i></a>
+                </h5>
                 <!-- Body -->
-                <div>${comment.body}</div>
+                <div class="comment-text">${comment.body}</div>
                 <!-- Reply Button -->
-                <a class="reply-button">Reply</a>
+                <a class="reply-button actions">Reply</a>
                 <!-- Show Replies Button -->
-                <a class="show-replies">Show Replies <i class="fa fa-angle-down"></i></a>
+                <a class="show-replies actions">Show Replies <i class="fa fa-angle-down"></i></a>
                 
                 <!-- Replies: Initially hidden -->
                 <div class="replies">
@@ -60,7 +64,7 @@ function appendComment(commentBox, comment) {
                 <!-- Reply Form: Initially Hidden -->
                 <div class="reply-form">
                     <div class="form-group mt-3">
-                        <textarea class="form-control comment-text" rows="2"></textarea>
+                        <textarea class="form-control comment-text-area" rows="2"></textarea>
                     </div>
                     <button class="btn btn-primary comment-button">Submit</button>
                 </div>
@@ -107,7 +111,7 @@ function appendComment(commentBox, comment) {
     const commentButton = $(`[data-id="${comment._id}"] .comment-button`);
     commentButton.click((event) => {
         // Get the Reply text
-        let replyTextArea = $(`[data-id="${comment._id}"] .comment-text`);
+        let replyTextArea = $(`[data-id="${comment._id}"] .comment-text-area`);
         let reply = replyTextArea.val().trim();
         if (reply !== "") {
             // Make a reply POST Request to server
@@ -120,6 +124,66 @@ function appendComment(commentBox, comment) {
                 // Append the reply to current comment and clear TextArea
                 appendReply(replyBox, reply);
                 replyTextArea.val('');
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        }
+    });
+
+
+    // Edit Button
+    const editButton = $(`[data-id="${comment._id}"] .edit-button`);
+    editButton.click((event)=>{
+        // Fetch the text to be updated
+        const commentText = $(`[data-id="${comment._id}"] .comment-text`);
+        // If the content is not edited yet
+        if(editButton.html() === '<i class="fa fa-pencil-square-o"></i>'){
+            // Set Comment's Body to be Editable and
+            // Show Done button instead of Edit
+            commentText.attr('contenteditable', true).focus();
+            editButton.html('<i class="fa fa-check"></i>');
+        }
+        // If the content is new comment's body
+        else {
+            // Fetch updated text
+            const newText = commentText.text().trim();
+            // PATCH Request to Server to update the comment
+            $.ajax({
+                url: `/comments/${comment._id}`,
+                type: 'PATCH',
+                data: {body: newText}
+            })
+            .then((data)=>{
+                // Change icon back to edit once edited
+                // and set contenteditable to false
+                console.log("Updated Comment: " + data);
+                editButton.html('<i class="fa fa-pencil-square-o"></i>');
+                commentText.attr('contenteditable', false);
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        }
+    });
+
+    // Delete Button
+    const deleteButton = $(`[data-id="${comment._id}"] .delete-button`);
+    deleteButton.click((event)=>{
+        // Confirm the delete operation before proceeding further
+        let confirmDelete = confirm("Confirm Delete?");
+        if(confirmDelete){
+            // Fetch current comment
+            const currComment = $(`[data-id="${comment._id}"]`);
+            // DELETE Reuqest to Server to Delete the Comment
+            $.ajax({
+                url: `/comments/${comment._id}`,
+                type: 'DELETE'
+            })
+            .then((comment)=>{
+                // Remove the comment from the DOM once successfully deleted from server database
+                console.log("Deleted: "+ comment);
+                currComment.remove();
             })
             .catch((err)=>{
                 console.log(err);

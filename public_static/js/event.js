@@ -37,7 +37,7 @@ $(() => {
 function appendComment(commentBox, comment){
     commentBox.append(`
         <!-- Comment -->
-        <div class="media mb-4">
+        <div data-id="${comment._id}" class="media mb-4">
             <!-- User Avatar -->
             <img class="d-flex mr-3 rounded-circle avatar" src="https://en.opensuse.org/images/0/0b/Icon-user.png" alt="">
             <!-- Comment Body -->
@@ -74,6 +74,36 @@ function appendComment(commentBox, comment){
             </div>
         </div>        
     `);
+
+    // --------------------
+    //    EVENT LISTENERS
+    // --------------------
+
+    // Click on Reply Button of Comment Added
+    // Toggle Replies Form
+    $(`[data-id="${comment._id}"] .media-body .reply-button`).click((event) => {
+        // Toggle the replies form of the comment
+        let target = $(event.target);
+        $(target.siblings(":last")).toggle();
+    });
+
+    // Click on Show Replies Button of current comment
+    // Toggle replies of current comment
+    $(`[data-id="${comment._id}"] .media-body .show-replies`).click((event) => {
+        // Toggle the replies container of the comment
+        let target = $(event.target);
+        $(target.siblings()[3]).toggle(function(){
+            if ($(this).is(':visible'))
+                $(this).css('display','flex');
+        });
+
+        // Update the Text of Button
+        if(target.text() === "Show Replies "){
+            target.html('Hide Replies <i class="fa fa-angle-up"></i>');
+        }
+        else
+            target.html('Show Replies <i class="fa fa-angle-down"></i>');
+    });
 }
 
 
@@ -87,34 +117,6 @@ function loadComments(commentBox, eventId)
         // Append each comment to commentBox
         comments.forEach((comment) => {
             appendComment(commentBox, comment);
-        });
-
-        // --------------------
-        //    EVENT LISTENERS
-        // --------------------
-
-        // Reply Button of Comments
-        $('.reply-button').click((event) => {
-            // Toggle the replies form of the comment
-            let target = $(event.target);
-            $(target.siblings(":last")).toggle();
-        });
-
-        // Show Replies Button of Comments
-        $('.show-replies').click((event) => {
-            // Toggle the replies container of the comment
-            let target = $(event.target);
-            $(target.siblings()[3]).toggle(function(){
-                if ($(this).is(':visible'))
-                    $(this).css('display','flex');
-            });
-
-            // Update the Text of Button
-            if(target.text() === "Show Replies "){
-                target.html('Hide Replies <i class="fa fa-angle-up"></i>');
-            }
-            else
-                target.html('Show Replies <i class="fa fa-angle-down"></i>');
         });
 
     }).catch((err) => {

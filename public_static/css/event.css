@@ -1,18 +1,4 @@
-body {
-    padding-top: 54px;
-}
-
-@media (min-width: 992px) {
-    body {
-        padding-top: 56px;
-    }
-}
-
-#details {
-    height: 100%;
-}
-
-
+/* Styles for hr in Description and Comment Cards */
 hr.styled {
     border: 0;
     height: 1px;
@@ -20,4 +6,34 @@ hr.styled {
     background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
     background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
     background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+}
+
+/* Reply Buttons in comments and Show Reply Button */
+.reply-button, .show-replies {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    color: #0000ff !important;
+    margin-right: 5px;
+}
+.reply-button:hover, .show-replies:hover {
+    color: #6c6cec !important;
+    cursor: pointer !important;
+    text-decoration: underline !important;
+}
+
+/* Hide the Reply Form in Starting */
+/* To be Shown only on pressing Reply Button */
+.reply-form {
+    display: none;
+}
+
+/* Hide the Replies of Comments in starting */
+/* To be Shown only on pressing Show Replies Button */
+.replies {
+    display:none;
+}
+
+/* Fixing Size of Avatars of Comment's Users */
+.avatar {
+    width: 50px;
 }

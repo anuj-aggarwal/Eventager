@@ -8,15 +8,7 @@ $(() => {
 
 
     // Initially, load the comments from server and add to DOM
-    $.get(`/events/${eventId}/comments`).then((comments) => {
-        commentBox.html('');
-        comments.forEach((comment) => {
-            appendComment(commentBox, comment);
-        });
-
-    }).catch((err) => {
-        console.log(err);
-    });
+    loadComments(commentBox, eventId);
 
     // Create new comment
     $('#comment-button').click(() => {
@@ -44,12 +36,88 @@ $(() => {
 // Function to append a single comment to the Comments Box DOM
 function appendComment(commentBox, comment){
     commentBox.append(`
+        <!-- Comment -->
         <div class="media mb-4">
-            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <!-- User Avatar -->
+            <img class="d-flex mr-3 rounded-circle avatar" src="https://en.opensuse.org/images/0/0b/Icon-user.png" alt="">
+            <!-- Comment Body -->
             <div class="media-body">
+                <!-- Username -->
                 <h5 class="mt-0">${comment.user.username}</h5>
-                ${comment.body}
+                <!-- Body -->
+                <div>${comment.body}</div>
+                <!-- Reply Button -->
+                <a class="reply-button">Reply</a>
+                <!-- Show Replies Button -->
+                <a class="show-replies">Show Replies <i class="fa fa-angle-down"></i></a>
+                
+                <!-- Replies: Initially hidden -->
+                <div class="replies media mt-4">
+                    <!-- Avatar -->
+                    <img class="d-flex mr-3 rounded-circle avatar" src="https://en.opensuse.org/images/0/0b/Icon-user.png" alt="">
+                    <!-- Reply Body -->
+                    <div class="media-body">
+                        <!-- Username -->
+                        <h5 class="mt-0">${comment.user.username}</h5>
+                        <!-- Body -->
+                        <div>${comment.body}</div>
+                    </div>
+                </div>
+                
+                <!-- Reply Form: Initially Hidden -->
+                <div class="reply-form">
+                    <div class="form-group mt-3">
+                        <textarea id="comment-text" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button id="comment-button" class="btn btn-primary">Submit</button>
+                </div>
             </div>
-        </div>
+        </div>        
     `);
+}
+
+
+// Load comments from Server for Event with eventId
+// and update the Comments Box
+function loadComments(commentBox, eventId)
+{
+    commentBox.html('');
+    // Fetch the comments from Server
+    $.get(`/events/${eventId}/comments`).then((comments) => {
+        // Append each comment to commentBox
+        comments.forEach((comment) => {
+            appendComment(commentBox, comment);
+        });
+
+        // --------------------
+        //    EVENT LISTENERS
+        // --------------------
+
+        // Reply Button of Comments
+        $('.reply-button').click((event) => {
+            // Toggle the replies form of the comment
+            let target = $(event.target);
+            $(target.siblings(":last")).toggle();
+        });
+
+        // Show Replies Button of Comments
+        $('.show-replies').click((event) => {
+            // Toggle the replies container of the comment
+            let target = $(event.target);
+            $(target.siblings()[3]).toggle(function(){
+                if ($(this).is(':visible'))
+                    $(this).css('display','flex');
+            });
+
+            // Update the Text of Button
+            if(target.text() === "Show Replies "){
+                target.html('Hide Replies <i class="fa fa-angle-up"></i>');
+            }
+            else
+                target.html('Show Replies <i class="fa fa-angle-down"></i>');
+        });
+
+    }).catch((err) => {
+        console.log(err);
+    });
 }

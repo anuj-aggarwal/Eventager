@@ -51,8 +51,9 @@ route.get('/:id', (req, res) => {
 route.get('/:id/comments', (req, res) => {
     // Find comments with the event id in params
     models.Comment.find({event: req.params.id})
-    // Populate the User in comment
+    // Populate the User and Replies' user in comment
     .populate('user')
+    .populate('replies.user')
     .then((comments) => {
         // Send comments to user
         res.send(comments);

@@ -58,6 +58,7 @@ app.use((req, res, next)=>{
 // ROUTES
 // Routers
 app.use("/events", require('./routes/event'));
+app.use("/comments", require('./routes/comment'));
 
 
 // Serve static files at root

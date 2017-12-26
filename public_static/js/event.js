@@ -260,6 +260,30 @@ function appendReply(replyBox, reply, commentId) {
             })
         }
     })
+
+    // Delete Button of Reply
+    const deleteReplyButton = $(`[data-id="${reply._id}"] .delete-reply-button`);
+    deleteReplyButton.click((event)=>{
+        // Confirm Delete
+        let confirmDelete = confirm("Confirm Delete?");
+        if (confirmDelete) {
+            // Fetch current Reply
+            const currReply = $(`[data-id="${reply._id}"]`);
+            // DELETE Request to Server to Delete the Reply
+            $.ajax({
+                url: `/comments/${commentId}/replies/${reply._id}`,
+                type: 'DELETE'
+            })
+            .then((reply) => {
+                // Remove the Reply from the DOM once successfully deleted from server database
+                console.log("Deleted: " + reply);
+                currReply.remove();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+    })
 }
 
 

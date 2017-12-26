@@ -59,6 +59,7 @@ route.delete('/:id', (req, res)=>{
         })
 });
 
+// PATCH Request to Edit a Reply Text
 route.patch('/:id/replies/:replyId', (req, res)=>{
     // Find the Comment to be edited
    models.Comment.findById(req.params.id)
@@ -84,6 +85,32 @@ route.patch('/:id/replies/:replyId', (req, res)=>{
             console.log(err);
        })
 });
+
+// DELETE Request to Delete a Reply Text
+route.delete('/:id/replies/:replyId', (req, res)=>{
+    // Find the Comment to be edited
+    models.Comment.findById(req.params.id)
+        .then((comment)=>{
+            // Find the reply to be edited
+            comment.replies.forEach((reply, index, replies)=>{
+                if(reply._id.toString() === req.params.replyId){
+                    // If current reply is required reply
+                    replies.splice(index, 1);
+                    comment.save()
+                    .then(()=>{
+                        // Send Deleted Reply to user
+                        return res.send(reply);
+                    })
+                }
+            });
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+});
+
+
+
 
 // Export the Router
 module.exports = route;

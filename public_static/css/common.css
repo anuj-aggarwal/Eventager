@@ -1,13 +1,15 @@
 /* Import Required Fonts */
 @import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
-@import url('https://fonts.googleapis.com/css?family=Montserrat:700');
-@import url('https://fonts.googleapis.com/css?family=PT+Sans:400i');
 
 /* Navbar Brand Heading */
 #navbar-brand {
     color: white;
     text-decoration: none;
     font-family: 'Kaushan Script', Helvetica, Arial, cursive;
+}
+
+.color-dark {
+    background-color: #070203;
 }
 
 /* Give Padding to anything after Navbar */

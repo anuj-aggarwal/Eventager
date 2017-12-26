@@ -23,8 +23,8 @@ hr.styled {
     text-decoration: underline !important;
 }
 
-/* Edit Buttons */
-.edit-button, .delete-button {
+/* Edit and Delete Buttons */
+.edit-button, .delete-button, .edit-reply-button, .delete-reply-button {
     font-size: 1.4rem;
 }
 

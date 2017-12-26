@@ -59,5 +59,31 @@ route.delete('/:id', (req, res)=>{
         })
 });
 
+route.patch('/:id/replies/:replyId', (req, res)=>{
+    // Find the Comment to be edited
+   models.Comment.findById(req.params.id)
+       .then((comment)=>{
+            // Find the reply to be edited
+            comment.replies.forEach((reply)=>{
+                if(reply._id.toString() === req.params.replyId){
+                    // If current reply is required reply
+                    reply.body = req.body.body;
+                    comment.save()
+                    .then((comment)=>{
+                        // Populate the user
+                        return models.Comment.populate(reply, 'user');
+                    })
+                }
+            });
+       })
+        .then((comment)=>{
+            // Send the comment with updated reply to user
+            res.send(comment);
+       })
+       .catch((err)=>{
+            console.log(err);
+       })
+});
+
 // Export the Router
 module.exports = route;

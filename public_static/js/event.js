@@ -75,7 +75,7 @@ function appendComment(commentBox, comment) {
 
     // Load replies on Appending comment
     const replyBox = $(`[data-id="${comment._id}"] .replies`);
-    loadReplies(replyBox, comment.replies);
+    loadReplies(replyBox, comment);
 
     // --------------------
     //    EVENT LISTENERS
@@ -119,13 +119,12 @@ function appendComment(commentBox, comment) {
                 commentId: comment._id,
                 body: reply
             })
-            .then((reply)=>{
-
+            .then((reply) => {
                 // Append the reply to current comment and clear TextArea
-                appendReply(replyBox, reply);
+                appendReply(replyBox, reply, comment._id);
                 replyTextArea.val('');
             })
-            .catch((err)=>{
+            .catch((err) => {
                 console.log(err);
             })
         }
@@ -134,11 +133,11 @@ function appendComment(commentBox, comment) {
 
     // Edit Button
     const editButton = $(`[data-id="${comment._id}"] .edit-button`);
-    editButton.click((event)=>{
+    editButton.click((event) => {
         // Fetch the text to be updated
         const commentText = $(`[data-id="${comment._id}"] .comment-text`);
         // If the content is not edited yet
-        if(editButton.html() === '<i class="fa fa-pencil-square-o"></i>'){
+        if (editButton.html() === '<i class="fa fa-pencil-square-o"></i>') {
             // Set Comment's Body to be Editable and
             // Show Done button instead of Edit
             commentText.attr('contenteditable', true).focus();
@@ -154,25 +153,25 @@ function appendComment(commentBox, comment) {
                 type: 'PATCH',
                 data: {body: newText}
             })
-            .then((data)=>{
-                // Change icon back to edit once edited
-                // and set contenteditable to false
-                console.log("Updated Comment: " + data);
-                editButton.html('<i class="fa fa-pencil-square-o"></i>');
-                commentText.attr('contenteditable', false);
-            })
-            .catch((err)=>{
-                console.log(err);
-            })
+                .then((data) => {
+                    // Change icon back to edit once edited
+                    // and set contenteditable to false
+                    console.log("Updated Comment: " + data);
+                    editButton.html('<i class="fa fa-pencil-square-o"></i>');
+                    commentText.attr('contenteditable', false);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
         }
     });
 
     // Delete Button
     const deleteButton = $(`[data-id="${comment._id}"] .delete-button`);
-    deleteButton.click((event)=>{
+    deleteButton.click((event) => {
         // Confirm the delete operation before proceeding further
         let confirmDelete = confirm("Confirm Delete?");
-        if(confirmDelete){
+        if (confirmDelete) {
             // Fetch current comment
             const currComment = $(`[data-id="${comment._id}"]`);
             // DELETE Reuqest to Server to Delete the Comment
@@ -180,14 +179,14 @@ function appendComment(commentBox, comment) {
                 url: `/comments/${comment._id}`,
                 type: 'DELETE'
             })
-            .then((comment)=>{
-                // Remove the comment from the DOM once successfully deleted from server database
-                console.log("Deleted: "+ comment);
-                currComment.remove();
-            })
-            .catch((err)=>{
-                console.log(err);
-            })
+                .then((comment) => {
+                    // Remove the comment from the DOM once successfully deleted from server database
+                    console.log("Deleted: " + comment);
+                    currComment.remove();
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
         }
     });
 }
@@ -210,28 +209,65 @@ function loadComments(commentBox, eventId) {
 }
 
 // Function to Append a reply to the replyBox
-function appendReply(replyBox, reply) {
+function appendReply(replyBox, reply, commentId) {
     replyBox.append(`
-        <div class="media mt-4">
+        <div data-id="${reply._id}" class="media mt-4">
             <!-- Avatar -->
             <img class="d-flex mr-3 rounded-circle avatar" src="https://en.opensuse.org/images/0/0b/Icon-user.png" alt="">
             <!-- Reply Body -->
             <div class="media-body">
                 <!-- Username -->
-                <h5 class="mt-0">${reply.user.username}</h5>
+                <h5 class="mt-0">
+                    ${reply.user.username}
+                    <!-- Delete Button -->
+                    <a class="pull-right actions delete-reply-button"><i class="fa fa-trash-o"></i></a>
+                    <!-- Edit Button -->
+                    <a class="pull-right actions edit-reply-button"><i class="fa fa-pencil-square-o"></i></a>
+                </h5>
                 <!-- Body -->
-                <div>${reply.body}</div>
+                <div class="reply-text">${reply.body}</div>
             </div>
         </div>
     `);
+
+    // Edit Button of Reply
+    const replyEditButton = $(`[data-id="${reply._id}"] .edit-reply-button`);
+    // On editing the Reply Text
+    replyEditButton.click((event)=> {
+        // Fetch the Reply text to be changed
+        const replyText = $(`[data-id="${reply._id}"] .reply-text`);
+        if (replyEditButton.html() === '<i class="fa fa-pencil-square-o"></i>') {
+            // If its Edit Button, make it editable and change icon
+            replyText.attr('contenteditable', true).focus();
+            replyEditButton.html('<i class="fa fa-check"></i>');
+        }
+        else {
+            // Fetch updated text
+            const newReply = replyText.text().trim();
+            // Make Patch Request to server
+            $.ajax({
+                url: `/comments/${commentId}/replies/${reply._id}`,
+                type: 'PATCH',
+                data: {body: newReply}
+            })
+            .then((data) => {
+                // Change button to Edit Button back
+                replyEditButton.html('<i class="fa fa-pencil-square-o"></i>');
+                replyText.attr('contenteditable', false);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+    })
 }
 
 
 // Function to update the replyBox with the replies passed
 // uses appendReply()
-function loadReplies(replyBox, replies) {
+function loadReplies(replyBox, comment) {
     replyBox.html('');
-    replies.forEach((reply)=>{
-        appendReply(replyBox, reply);
-    })
+    comment.replies.forEach((reply) => {
+        appendReply(replyBox, reply, comment._id);
+    });
 }

@@ -14,4 +14,10 @@ $(()=>{
             navbar.removeClass('color-dark');
         }
     });
+
+    $("#landing-btn").click(() => {
+        $('html, body').animate({
+            scrollTop: $("#features").offset().top
+        }, 1000);
+    });
 });

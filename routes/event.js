@@ -13,6 +13,8 @@ route.get('/show', (req,res)=>{
 route.get('/', (req,res)=>{
     // Get all the events
     models.Event.find()
+        .skip(parseInt(req.query.skip))
+        .limit(parseInt(req.query.count))
     .then((events)=>{
         // Send all events to user
         res.send(events);

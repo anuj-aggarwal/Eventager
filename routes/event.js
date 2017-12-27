@@ -4,6 +4,23 @@ const route = require('express').Router();
 // Require Models
 const models = require("../models");
 
+// GET Route for all Events Page
+route.get('/show', (req,res)=>{
+    res.render('events');
+});
+
+// GET Route for events
+route.get('/', (req,res)=>{
+    // Get all the events
+    models.Event.find()
+    .then((events)=>{
+        // Send all events to user
+        res.send(events);
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+});
 
 // GET Route for New Event Page
 route.get('/new', (req, res) => {

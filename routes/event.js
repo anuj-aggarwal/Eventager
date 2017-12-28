@@ -15,13 +15,13 @@ route.get('/', (req,res)=>{
     models.Event.find()
         .skip(parseInt(req.query.skip))
         .limit(parseInt(req.query.count))
-    .then((events)=>{
-        // Send all events to user
-        res.send(events);
-    })
-    .catch((err)=>{
-        console.log(err);
-    })
+        .then((events)=>{
+            // Send all events to user
+            res.send(events);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
 });
 
 // GET Route for New Event Page
@@ -52,13 +52,13 @@ route.post("/", (req, res) => {
 route.get('/:id', (req, res) => {
     // Find the Event
     models.Event.findById(req.params.id)
-    .then((event) => {
-        if (event === null)
-            throw Error('Event does not exists!!');
-        // If event found, Render the Event Page with event's details
-        res.render('event', {event});
-    })
-    .catch((err) => {
+        .then((event) => {
+            if (event === null)
+                throw Error('Event does not exists!!');
+            // If event found, Render the Event Page with event's details
+            res.render('event', {event});
+        })
+        .catch((err) => {
             // If event not found or other Errors,
             // log the error and Redirect to Home Page
             console.log(`Error: ${err}`);
@@ -69,17 +69,21 @@ route.get('/:id', (req, res) => {
 // Get Route for all Comments of an event
 route.get('/:id/comments', (req, res) => {
     // Find comments with the event id in params
+    // Send comments after skipping 'skip' comments
+    // Sen 'limit' comments
     models.Comment.find({event: req.params.id})
-    // Populate the User and Replies' user in comment
-    .populate('user')
-    .populate('replies.user')
-    .then((comments) => {
-        // Send comments to user
-        res.send(comments);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+        .skip(parseInt(req.query.skip))
+        .limit(parseInt(req.query.count))
+        // Populate the User and Replies' user in comment
+        .populate('user')
+        .populate('replies.user')
+        .then((comments) => {
+            // Send comments to user
+            res.send(comments);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 });
 
 // Post Route for creating new comment to Event(not to another comment)
@@ -90,26 +94,26 @@ route.post('/:id/comments', (req, res) => {
         event: req.params.id,
         user: req.user._id
     })
-    .then((comment) => {
-        // Find the Current Event
-        models.Event.findById(req.params.id).then((event) => {
-            // Add the comment to Event's Comments
-            event.comments.push(comment);
-            return event.save();
-        })
-        .then((event) => {
-            // Find the newly added comment populated with user
-            models.Comment.findById(comment._id)
-            .populate('user')
-            .then((comment) => {
-                // Send the new comment to user
-                res.send(comment);
+        .then((comment) => {
+            // Find the Current Event
+            models.Event.findById(req.params.id).then((event) => {
+                // Add the comment to Event's Comments
+                event.comments.push(comment);
+                return event.save();
             })
+                .then((event) => {
+                    // Find the newly added comment populated with user
+                    models.Comment.findById(comment._id)
+                        .populate('user')
+                        .then((comment) => {
+                            // Send the new comment to user
+                            res.send(comment);
+                        })
+                })
         })
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+        .catch((err) => {
+            console.log(err);
+        })
 });
 
 // Export the Router

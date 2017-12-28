@@ -1,4 +1,11 @@
+let loadedComments = 0;
+let areCommentsLeft = true;
+const loadAmount = 3;
+
 $(() => {
+
+    const spinner = $('#commentSpinner');
+    spinner.hide();
     // Id of current Event
     const eventId = $('#event-heading').data('id');
     // Comment Box
@@ -8,7 +15,7 @@ $(() => {
 
 
     // Initially, load the comments from server and add to DOM
-    loadComments(commentBox, eventId);
+    loadComments(commentBox, eventId, spinner);
 
     // Create new comment
     $('#comment-button').click(() => {
@@ -28,6 +35,15 @@ $(() => {
             commentTextArea.val('');
         }
     });
+
+    $('#loadComments').click(()=> {
+        if(areCommentsLeft){
+            spinner.show();
+            setTimeout(()=>{
+                loadComments(commentBox, eventId, spinner);
+            }, 500);
+        }
+    })
 
 
 });
@@ -119,14 +135,14 @@ function appendComment(commentBox, comment) {
                 commentId: comment._id,
                 body: reply
             })
-            .then((reply) => {
-                // Append the reply to current comment and clear TextArea
-                appendReply(replyBox, reply, comment._id);
-                replyTextArea.val('');
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+                .then((reply) => {
+                    // Append the reply to current comment and clear TextArea
+                    appendReply(replyBox, reply, comment._id);
+                    replyTextArea.val('');
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
         }
     });
 
@@ -194,14 +210,22 @@ function appendComment(commentBox, comment) {
 
 // Load comments from Server for Event with eventId
 // and update the Comments Box
-function loadComments(commentBox, eventId) {
-    commentBox.html('');
+function loadComments(commentBox, eventId, spinner) {
     // Fetch the comments from Server
-    $.get(`/events/${eventId}/comments`).then((comments) => {
+    $.get(`/events/${eventId}/comments?skip=${loadedComments}&count=${loadAmount}`).then((comments) => {
         // Append each comment to commentBox
         comments.forEach((comment) => {
             appendComment(commentBox, comment);
         });
+
+        spinner.hide();
+
+        if(comments.length < loadAmount){
+            areCommentsLeft = false;
+            $('#loadComments').hide();
+        }
+
+        loadedComments += comments.length;
 
     }).catch((err) => {
         console.log(err);
@@ -250,16 +274,16 @@ function appendReply(replyBox, reply, commentId) {
                 type: 'PATCH',
                 data: {body: newReply}
             })
-            .then((data) => {
-                // Change button to Edit Button back
-                replyEditButton.html('<i class="fa fa-pencil-square-o"></i>');
-                replyText.attr('contenteditable', false);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+                .then((data) => {
+                    // Change button to Edit Button back
+                    replyEditButton.html('<i class="fa fa-pencil-square-o"></i>');
+                    replyText.attr('contenteditable', false);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
         }
-    })
+    });
 
     // Delete Button of Reply
     const deleteReplyButton = $(`[data-id="${reply._id}"] .delete-reply-button`);
@@ -274,14 +298,14 @@ function appendReply(replyBox, reply, commentId) {
                 url: `/comments/${commentId}/replies/${reply._id}`,
                 type: 'DELETE'
             })
-            .then((reply) => {
-                // Remove the Reply from the DOM once successfully deleted from server database
-                console.log("Deleted: " + reply);
-                currReply.remove();
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+                .then((reply) => {
+                    // Remove the Reply from the DOM once successfully deleted from server database
+                    console.log("Deleted: " + reply);
+                    currReply.remove();
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
         }
     })
 }

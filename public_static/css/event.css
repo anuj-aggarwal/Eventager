@@ -44,3 +44,16 @@ hr.styled {
 .avatar {
     width: 50px;
 }
+
+#commentSpinner {
+    animation: 1s linear spin infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

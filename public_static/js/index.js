@@ -20,4 +20,10 @@ $(()=>{
             scrollTop: $("#features").offset().top
         }, 1000);
     });
+
+    $("#get-started-btn").click(() => {
+        $('html, body').animate({
+            scrollTop: $("#trending").offset().top
+        }, 1000);
+    });
 });

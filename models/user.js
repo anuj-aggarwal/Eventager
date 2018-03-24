@@ -16,7 +16,9 @@ const userSchema = mongoose.Schema({
     eventsAttending: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "event"
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: String
 }, {
     usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });

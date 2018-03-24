@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventager</title>
+
+    <!-- Include Common Files -->
+    <% include ./partials/header.ejs %>
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+<% include ./partials/navbar.ejs %>
+
+<h1>Reset Password</h1>
+
+<form action="/reset/<%= user.resetPasswordToken%>" method="post">
+    <h4>New Password </h4>
+    <input type="password" name="password">
+
+    <!-- TODO: Add Confirm Password Feature -->
+    <!--<h4>Confirm Password</h4>-->
+    <!--<input type="password" name="confirm">-->
+
+    <button>Submit</button>
+</form>
+
+</body>
+</html>

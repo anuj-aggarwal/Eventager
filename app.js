@@ -108,7 +108,7 @@ app.post('/signup', (req, res, next) => {
     })
     .catch((err)=>{
         console.log(`Error: ${err}`);
-        res.redirect('/loginsignup.html');
+        res.redirect('/loginsignup');
     });
 });
 

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/anuj-aggarwal/Eventager#readme",
   "dependencies": {
+    "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.7",
     "express": "^4.16.3",

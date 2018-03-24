@@ -3,6 +3,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const path = require("path");
+const MongoStore = require('connect-mongo')(session);
 
 
 // REQUIRE USER CREATED FILES
@@ -32,7 +33,8 @@ app.use(cookieParser(config.COOKIE_SECRET_KEY));
 app.use(session({
     secret: config.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: db.connection })
 }));
 
 // Initialize Passport

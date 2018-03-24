@@ -17,13 +17,12 @@
   },
   "homepage": "https://github.com/anuj-aggarwal/Eventager#readme",
   "dependencies": {
-    "bcrypt": "^1.0.3",
-    "body-parser": "^1.18.2",
+    "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.7",
-    "express": "^4.16.2",
+    "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "mongoose": "^4.13.7",
+    "mongoose": "^5.0.11",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
   }

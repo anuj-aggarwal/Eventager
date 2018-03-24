@@ -1,6 +1,5 @@
 // REQUIRE NODE MODULES
 const express = require("express");
-const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const path = require("path");
@@ -10,6 +9,9 @@ const path = require("path");
 const config = require("./config");
 const models = require("./models");
 const Passport = require("./passport");
+
+// Connect to DB
+const db = require("./db");
 
 
 // INITIALIZATION
@@ -21,9 +23,9 @@ const app = express();
 app.set("view engine", "ejs");
 
 // MIDDLEWARES
-// Body Parser
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+// Parse Body
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 // Cookie Parser
 app.use(cookieParser(config.COOKIE_SECRET_KEY));

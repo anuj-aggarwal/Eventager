@@ -22,7 +22,7 @@ $(() => {
         // If text present
         if (commentTextArea.val().trim() !== "") {
             // Make a new comment
-            $.post(`/events/${eventId}/comments`, {
+            $.post(`/api/events/${eventId}/comments`, {
                 body: commentTextArea.val().trim()
             })
                 .then((comment) => {
@@ -131,7 +131,7 @@ function appendComment(commentBox, comment) {
         let reply = replyTextArea.val().trim();
         if (reply !== "") {
             // Make a reply POST Request to server
-            $.post('/comments', {
+            $.post('/api/comments', {
                 commentId: comment._id,
                 body: reply
             })
@@ -165,7 +165,7 @@ function appendComment(commentBox, comment) {
             const newText = commentText.text().trim();
             // PATCH Request to Server to update the comment
             $.ajax({
-                url: `/comments/${comment._id}`,
+                url: `/api/comments/${comment._id}`,
                 type: 'PATCH',
                 data: {body: newText}
             })
@@ -192,7 +192,7 @@ function appendComment(commentBox, comment) {
             const currComment = $(`[data-id="${comment._id}"]`);
             // DELETE Reuqest to Server to Delete the Comment
             $.ajax({
-                url: `/comments/${comment._id}`,
+                url: `/api/comments/${comment._id}`,
                 type: 'DELETE'
             })
                 .then((comment) => {
@@ -212,7 +212,7 @@ function appendComment(commentBox, comment) {
 // and update the Comments Box
 function loadComments(commentBox, eventId, spinner) {
     // Fetch the comments from Server
-    $.get(`/events/${eventId}/comments?skip=${loadedComments}&count=${loadAmount}`).then((comments) => {
+    $.get(`/api/events/${eventId}/comments?skip=${loadedComments}&count=${loadAmount}`).then((comments) => {
         // Append each comment to commentBox
         comments.forEach((comment) => {
             appendComment(commentBox, comment);
@@ -270,7 +270,7 @@ function appendReply(replyBox, reply, commentId) {
             const newReply = replyText.text().trim();
             // Make Patch Request to server
             $.ajax({
-                url: `/comments/${commentId}/replies/${reply._id}`,
+                url: `/api/comments/${commentId}/replies/${reply._id}`,
                 type: 'PATCH',
                 data: {body: newReply}
             })
@@ -295,7 +295,7 @@ function appendReply(replyBox, reply, commentId) {
             const currReply = $(`[data-id="${reply._id}"]`);
             // DELETE Request to Server to Delete the Reply
             $.ajax({
-                url: `/comments/${commentId}/replies/${reply._id}`,
+                url: `/api/comments/${commentId}/replies/${reply._id}`,
                 type: 'DELETE'
             })
                 .then((reply) => {

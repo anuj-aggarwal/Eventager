@@ -2,11 +2,11 @@
 const mongoose = require("mongoose");
 
 // DB Config File
-const config = require("./config");
+const CONFIG = require("./config");
 
 // Connect to MongoDB Database
 mongoose
-	.connect(`mongodb://${config.DB.HOST}:${config.DB.PORT}/${config.DB.NAME}`)
+	.connect(`mongodb://${CONFIG.DB.HOST}:${CONFIG.DB.PORT}/${CONFIG.DB.NAME}`)
 	.then(() => {
 		console.log("Database Ready for use!");
 	})

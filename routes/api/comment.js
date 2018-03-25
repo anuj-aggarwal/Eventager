@@ -2,8 +2,7 @@
 const route = require('express').Router();
 
 // Require Models
-const models = require("../models");
-
+const models = require("../../models");
 
 // POST Route for Replying to a comment
 route.post('/', (req,res)=>{
@@ -30,6 +29,7 @@ route.post('/', (req,res)=>{
     });
 });
 
+
 // PATCH Request for updating a comment's Body
 route.patch('/:id', (req,res)=>{
     // Find the comment and update the body of comment
@@ -45,6 +45,7 @@ route.patch('/:id', (req,res)=>{
     })
 });
 
+
 // DELETE Request for deleting a comment
 route.delete('/:id', (req, res)=>{
     // Find the comment and delete it
@@ -58,6 +59,7 @@ route.delete('/:id', (req, res)=>{
             console.log(err);
         })
 });
+
 
 // PATCH Request to Edit a Reply Text
 route.patch('/:id/replies/:replyId', (req, res)=>{
@@ -86,6 +88,7 @@ route.patch('/:id/replies/:replyId', (req, res)=>{
        })
 });
 
+
 // DELETE Request to Delete a Reply Text
 route.delete('/:id/replies/:replyId', (req, res)=>{
     // Find the Comment to be edited
@@ -108,9 +111,6 @@ route.delete('/:id/replies/:replyId', (req, res)=>{
             console.log(err);
         })
 });
-
-
-
 
 // Export the Router
 module.exports = route;

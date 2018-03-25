@@ -31,7 +31,7 @@ $(()=>{
 // use: appendEvent
 function loadAndAppendEvents(eventsContainer, spinner) {
     // Fetch Events from the Server
-    $.get(`/events?skip=${loadedEventsCount}&count=${loadAmount}`)
+    $.get(`/api/events?skip=${loadedEventsCount}&count=${loadAmount}`)
     .then((events)=>{
         // Append each event to the events container
         events.forEach((event)=>{

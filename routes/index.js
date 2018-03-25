@@ -14,8 +14,8 @@ route.get('/', (req,res)=>{
 
 // Sub Routes
 route.use("/", require("./auth"));
+route.use("/api", require("./api"));
 route.use("/events", require('./event'));
-route.use("/comments", require('./comment'));
 
 
 // Export the Router

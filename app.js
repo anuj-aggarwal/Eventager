@@ -2,12 +2,11 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const path = require("path");
 const MongoStore = require('connect-mongo')(session);
 
 
 // REQUIRE USER CREATED FILES
-const config = require("./config");
+const CONFIG = require("./config");
 const models = require("./models");
 const Passport = require("./passport");
 
@@ -29,9 +28,9 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 // Cookie Parser
-app.use(cookieParser(config.COOKIE_SECRET_KEY));
+app.use(cookieParser(CONFIG.COOKIE_SECRET_KEY));
 app.use(session({
-    secret: config.SESSION_SECRET,
+    secret: CONFIG.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({ mongooseConnection: db.connection })
@@ -42,82 +41,20 @@ app.use(Passport.initialize());
 app.use(Passport.session());
 
 
-// FUNCTIONS: HELPERS
-function checkLoggedIn(req, res, next) {
-    if (req.user)
-        next();
-    else {
-        console.log("Invalid Login");
-        res.redirect("/");
-    }
-}
-
-
 // Use user for all renders
 app.use((req, res, next)=>{
     res.locals.user= req.user;
     next();
 });
 
+
+
 // ROUTES
 // Routers
-app.use("/events", require('./routes/event'));
-app.use("/comments", require('./routes/comment'));
-
-
-// Serve static files at root
-app.use('/', express.static(path.join(__dirname, 'public_static')));
-
-// GET Request for Index Page
-app.get('/', (req,res)=>{
-    res.render('index');
-});
-
-// GET ROUTE For Login/Signup Page
-app.get('/loginsignup', (req,res)=>{
-    res.render('loginsignup');
-});
-
-// POST Request for Logging In
-app.post('/login', Passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/loginsignup'
-}));
-
-// Get Route for Logout
-app.get('/logout', (req, res)=>{
-    req.logout();
-    res.redirect('/');
-});
-
-// POST Request for Sign Up
-app.post('/signup', (req, res, next) => {
-    // Check if user already exists
-    models.User.findOne({
-        username: req.body.username
-    })
-    .then((user)=>{
-        if(user!==null)
-            throw Error('User already exists!!');
-        // If User not found, create User
-        return models.User.create(req.body);
-    })
-    .then((user)=>{
-        // If User created successfully
-        // Log the user in
-        Passport.authenticate("local", {
-            successRedirect: "/",
-            failureRedirect: "/loginsignup"
-        })(req, res, next);
-    })
-    .catch((err)=>{
-        console.log(`Error: ${err}`);
-        res.redirect('/loginsignup.html');
-    });
-});
+app.use("/", require("./routes"));
 
 
 // LISTEN AT PORT SPECIFIED
-app.listen(config.SERVER.PORT, () => {
-    console.log(`Server Started at http://localhost:${config.SERVER.PORT}/`);
+app.listen(CONFIG.SERVER.PORT, () => {
+    console.log(`Server Started at http://localhost:${CONFIG.SERVER.PORT}/`);
 });

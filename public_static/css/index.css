@@ -90,39 +90,49 @@ a:hover {
     font-family: 'Rye';
 }
 
-.front, .back {
+
+.info-card {
+    width: 100%;
+    height: 300px;
+    position: relative;
+
+    perspective: 1500px;
+}
+
+.info-card .front, .back {
     width: 100%;
     height: 100%;
-    transition: transform 1s;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-}
-
-.front {
-    overflow: hidden;
     position: absolute;
-    z-index: 1;
-}
 
+    backface-visibility: hidden;
+    transition: all 1s;
+}
 .back {
+    transform: rotateY(180deg);
     text-align: center;
-    background-color: #3776bb;
-    color: white;
+}
+.info-card:hover .front {
     transform: rotateY(-180deg);
 }
-
 .info-card:hover .back {
-    transform: rotateY(0);
+    transform: rotateY(0deg);
 }
 
-.info-card:hover .front {
-    transform: rotateY(180deg);
+
+.info-card .card {
+    width: 100%;
+    height: 100%;
+}
+.info-card .back .card {
+    background-color: #3776bb;
+    color: white;
 }
 
 .card-image {
-    max-width: 100%;
+    width: 100%;
     max-height: 70%;
 }
+
 
 #view-trending-btn {
     font-size: 20px;

@@ -5,7 +5,7 @@ const route = require('express').Router();
 const models = require("../models");
 
 // GET Route for all Events Page
-route.get('/', (req,res)=>{
+route.get('/', (req, res) => {
     res.render('events');
 });
 
@@ -42,7 +42,10 @@ route.get('/:id', (req, res) => {
             if (event === null)
                 throw Error('Event does not exists!!');
             // If event found, Render the Event Page with event's details
-            res.render('event', {event});
+            res.render('event', {
+                event,
+                attending: req.user && event.peopleAttending.indexOf(req.user._id.toString()) !== -1
+            });
         })
         .catch((err) => {
             // If event not found or other Errors,

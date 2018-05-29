@@ -17,3 +17,5 @@ function checkAPILoggedIn(req, res, next) {
         res.sendStatus(401);
     }
 }
+
+module.exports = { checkLoggedIn, checkAPILoggedIn };

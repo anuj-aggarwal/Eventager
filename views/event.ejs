@@ -125,6 +125,12 @@
                         </li>
                     </ul>
                 </div>
+
+                <% if (attending) { %>
+                    <button id="attending-btn" data-attending="true" class="btn btn-success">Plan Cancelled?</button>
+                <% } else { %>
+                    <button id="attending-btn" data-attending="false" class="btn btn-primary">Attending?</button>
+                <% } %>
             </div>
         </div>  <!-- END SideCard -->
     </div>

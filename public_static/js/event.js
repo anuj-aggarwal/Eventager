@@ -45,6 +45,28 @@ $(() => {
         }
     })
 
+    const attendingBtn =  $("#attending-btn");
+    attendingBtn.click(() => {
+        const attending = attendingBtn.data("attending");
+        $.post(`/api/events/${eventId}/attending`,{ attending: !attending })
+         .then(({err}) => {
+            if (err)
+                throw new Error(err);
+            if (attending) {
+                attendingBtn.data("attending", false);
+                attendingBtn.text("Attending?");
+                attendingBtn.toggleClass("btn-primary");
+                attendingBtn.toggleClass("btn-success");
+            }
+            else {
+                attendingBtn.data("attending", true);
+                attendingBtn.text("Plan Cancelled?");
+                attendingBtn.toggleClass("btn-primary");
+                attendingBtn.toggleClass("btn-success");
+            }
+         })
+         .catch(err => console.error(err));
+    });
 
 });
 

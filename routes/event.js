@@ -20,6 +20,7 @@ route.post("/", (req, res) => {
     // Create a new Event
     models.Event.create({
         ...req.body,
+        tags: req.body.tags.split(";").map(tag => tag.trim()).filter(tag => tag !== ""),
         organizers: [req.user._id]
     })
         .then((event) => {

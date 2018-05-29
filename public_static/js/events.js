@@ -62,7 +62,13 @@ function appendEvent(eventsContainer, event) {
                     <div class="media">
                         <img class="d-flex mr-5 event-img" src="http://placehold.it/200x200" alt="">
                         <div class="media-body">
-                            <h5 class="event-name">${event.name}</h5>
+                            <h5 class="event-name">
+                                ${event.name}
+                                ${event.tags.map(tag => {
+                                    console.log(tag);
+                                    return `<span class="event-tag badge badge-pill badge-primary">${tag}</span>`;
+                                }).join(" ")}
+                            </h5>
                             <div class="event-description">
                                 <div class="datetime"><i class="fa fa-clock-o"></i> ${event.dateTime}</div>
                                 <div class="venue"><i class="fa fa-map-marker"></i> ${event.venue}</div>

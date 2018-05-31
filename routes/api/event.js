@@ -5,12 +5,20 @@ const route = require('express').Router();
 const models = require("../../models");
 
 
+
 // GET Route for events
 route.get('/', (req,res)=>{
+    var sortBy;
+    if(req.query.sortBy.localeCompare("trending")==0)
+        sortBy="numPeopleAttending";
+    else if (req.query.sortBy.localeCompare("recent")==0)
+        sortBy="dateTime";
+    console.log(sortBy);
     // Get all the events
     models.Event.find()
         .skip(parseInt(req.query.skip))
         .limit(parseInt(req.query.count))
+        .sort([[sortBy, -1]])
         .then((events)=>{
             // Send all events to user
             res.send(events);

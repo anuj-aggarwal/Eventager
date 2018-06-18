@@ -117,11 +117,20 @@
                         <!-- Organizers -->
                         <li>
                             <b>Organizers: </b>
-                            <ul>
+                            <ul id="organizer-list">
                                 <% event.organizers.forEach((organizer) => { %>
-                                <li><%= organizer %></li>
+                                <li><%= organizer.name %></li>
                                 <% }) %>
                             </ul>
+                            <% if(event.organizers.findIndex(element=> element._id.equals(user._id)) != -1) { %>
+                                <button id="addOrganizer" class="btn btn-primary">Add Organizer</button>
+                                <form id="organizer-form">
+                                    <div class="form-group">
+                                        <input id="organizer-inp" type="text" class="form-control mt-2"></input>
+                                    </div>
+                                    <button id="organizer-submit" class="btn btn-info">Submit</button>
+                                </form>
+                            <% } %>                        
                         </li>
                     </ul>
                 </div>

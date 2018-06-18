@@ -5,7 +5,7 @@ const route = require('express').Router();
 const models = require("../models");
 
 // GET Route for all Events Page
-route.get('/', (req,res)=>{
+route.get('/', (req, res) => {
     res.render('events');
 });
 
@@ -38,11 +38,12 @@ route.post("/", (req, res) => {
 route.get('/:id', (req, res) => {
     // Find the Event
     models.Event.findById(req.params.id)
+        .populate("organizers")
         .then((event) => {
             if (event === null)
                 throw Error('Event does not exists!!');
             // If event found, Render the Event Page with event's details
-            res.render('event', {event});
+            res.render('event', { event });
         })
         .catch((err) => {
             // If event not found or other Errors,

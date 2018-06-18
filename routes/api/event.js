@@ -81,5 +81,32 @@ route.post('/:id/comments', (req, res) => {
 });
 
 
+route.post('/:id/organizers', (req, res) => {
+    models.Event.findById(req.params.id)
+        .then((event) => {
+            return models.User.findOne({
+                username: req.body.username
+            })
+                .then((user) => {
+                    if (!user) return new Error("No such Username exists!");
+                    if (event.organizers.findIndex(organizer => user._id.equals(organizer)) != -1)
+                        res.send({ err: "User already exists" });
+                    else
+                        event.organizers.push(user._id);
+                    return event.save();
+                });
+        })
+        .then(event => {
+            return event.populate("organizers").execPopulate();
+        })
+        .then((nevent) => {
+            let length = nevent.organizers.length;
+            if (!res.headersSent)
+                res.send({ organizer: nevent.organizers[length - 1].name });
+        })
+        .catch(err => console.log(err));
+});
+
+
 // Export the Router
 module.exports = route;

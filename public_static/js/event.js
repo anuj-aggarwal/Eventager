@@ -36,16 +36,37 @@ $(() => {
         }
     });
 
-    $('#loadComments').click(()=> {
-        if(areCommentsLeft){
+    $('#loadComments').click(() => {
+        if (areCommentsLeft) {
             spinner.show();
-            setTimeout(()=>{
+            setTimeout(() => {
                 loadComments(commentBox, eventId, spinner);
             }, 500);
         }
     })
 
+    $('#addOrganizer').click((event) => {
+        $(event.target).next().toggle();
+    });
 
+    $('#organizer-form').submit((e) => {
+        e.preventDefault();
+        const input = $('#organizer-inp');
+        if (input.val().trim() != "") {
+            $.post('/api/events/' + eventId + '/organizers', {
+                username: input.val().trim()
+            })
+                .then(({ err, organizer }) => {
+                    if (!err)
+                        $('#organizer-list').append('<li>' + organizer + '</li>');
+                    input.val('');
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.send({ err: "Internal Server Error!" });
+                });
+        }
+    });
 });
 
 
@@ -167,7 +188,7 @@ function appendComment(commentBox, comment) {
             $.ajax({
                 url: `/api/comments/${comment._id}`,
                 type: 'PATCH',
-                data: {body: newText}
+                data: { body: newText }
             })
                 .then((data) => {
                     // Change icon back to edit once edited
@@ -220,7 +241,7 @@ function loadComments(commentBox, eventId, spinner) {
 
         spinner.hide();
 
-        if(comments.length < loadAmount){
+        if (comments.length < loadAmount) {
             areCommentsLeft = false;
             $('#loadComments').hide();
         }
@@ -257,7 +278,7 @@ function appendReply(replyBox, reply, commentId) {
     // Edit Button of Reply
     const replyEditButton = $(`[data-id="${reply._id}"] .edit-reply-button`);
     // On editing the Reply Text
-    replyEditButton.click((event)=> {
+    replyEditButton.click((event) => {
         // Fetch the Reply text to be changed
         const replyText = $(`[data-id="${reply._id}"] .reply-text`);
         if (replyEditButton.html() === '<i class="fa fa-pencil-square-o"></i>') {
@@ -272,7 +293,7 @@ function appendReply(replyBox, reply, commentId) {
             $.ajax({
                 url: `/api/comments/${commentId}/replies/${reply._id}`,
                 type: 'PATCH',
-                data: {body: newReply}
+                data: { body: newReply }
             })
                 .then((data) => {
                     // Change button to Edit Button back
@@ -287,7 +308,7 @@ function appendReply(replyBox, reply, commentId) {
 
     // Delete Button of Reply
     const deleteReplyButton = $(`[data-id="${reply._id}"] .delete-reply-button`);
-    deleteReplyButton.click((event)=>{
+    deleteReplyButton.click((event) => {
         // Confirm Delete
         let confirmDelete = confirm("Confirm Delete?");
         if (confirmDelete) {

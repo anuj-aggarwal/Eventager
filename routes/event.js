@@ -40,7 +40,7 @@ route.post("/", (req, res) => {
 });
 
 route.post('/filter', (req,res) => {
-    res.redirect('/events?q='+req.body.filter);
+    res.redirect('/events?q='+req.body.old+req.body.filter);
 })
 
 // GET Route for a single Event Page

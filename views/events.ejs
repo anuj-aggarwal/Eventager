@@ -29,6 +29,7 @@
 
     <form action="/events/filter" method="POST">
         <div class="form-group">
+            <input type="hidden" name="old" value="<%= filterString %>">
             <input type="text" class="form-control" name="filter" placeholder="Enter tags to filter, separated by semicolon">
         </div>
     </form>

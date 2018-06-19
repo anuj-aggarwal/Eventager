@@ -6,7 +6,10 @@ const models = require("../models");
 
 // GET Route for all Events Page
 route.get('/', (req,res)=>{
-    res.render('events');
+    let filterTags;
+    if(req.query.q)
+        filterTags= req.query.q.split(";").map(tag => tag.trim()).filter(tag => tag !== "")
+    res.render('events', {filterTags} );
 });
 
 
@@ -34,6 +37,9 @@ route.post("/", (req, res) => {
         });
 });
 
+route.post('/filter', (req,res) => {
+    res.redirect('/events?q='+req.body.filter);
+})
 
 // GET Route for a single Event Page
 route.get('/:id', (req, res) => {

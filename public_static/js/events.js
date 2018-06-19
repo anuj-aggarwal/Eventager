@@ -10,6 +10,7 @@ $(()=>{
     // Events Container to hold all events
     const eventsContainer = $('#events-container');
     // Load the events in beginning
+    //console.log("abc"+ filterTags);
     loadAndAppendEvents(eventsContainer, spinner);
 
     // When User reaches end of Page

@@ -35,7 +35,7 @@ function loadAndAppendEvents(eventsContainer, spinner) {
     let taglist= $('.filter-tag');
     for(let i=0;i<taglist.length;i++)
         str=str+(taglist[i].innerText)+';';
-        
+
     // Fetch Events from the Server
     $.get(`/api/events?skip=${loadedEventsCount}&count=${loadAmount}`+str)
     .then((events)=>{

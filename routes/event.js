@@ -6,10 +6,12 @@ const models = require("../models");
 
 // GET Route for all Events Page
 route.get('/', (req,res)=>{
-    let filterTags;
-    if(req.query.q)
-        filterTags= req.query.q.split(";").map(tag => tag.trim()).filter(tag => tag !== "")
-    res.render('events', {filterTags} );
+    let filterTags, filterString;
+    if(req.query.q){
+        filterTags= req.query.q.split(";").map(tag => tag.trim()).filter(tag => tag !== "");
+        filterString = filterTags.reduce((acc, tag) => acc + tag + ";", "");
+    }
+    res.render('events', {filterTags, filterString} );
 });
 
 

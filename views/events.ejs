@@ -36,7 +36,10 @@
     <div class="container m-3">
         <% if(locals.filterTags){ %>
             <% filterTags.forEach((tag)=>{ %>
-                <span class="filter-tag event-tag badge badge-pill badge-primary"><%= tag %></span>
+                <span class="filter-tag event-tag badge badge-pill badge-primary">
+                    <%= tag %>
+                    <a href="/events?q=<%=filterString.replace(tag+';','')%>"><i class="fa fa-times filterTagCross" aria-hidden="true"></i></a>
+                </span>
             <% }) %>
         <% } %>
     </div>

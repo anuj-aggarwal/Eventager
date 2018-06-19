@@ -10,7 +10,6 @@ $(()=>{
     // Events Container to hold all events
     const eventsContainer = $('#events-container');
     // Load the events in beginning
-    //console.log("abc"+ filterTags);
     loadAndAppendEvents(eventsContainer, spinner);
 
     // When User reaches end of Page
@@ -31,8 +30,14 @@ $(()=>{
 // and append them to Events Container in DOM
 // use: appendEvent
 function loadAndAppendEvents(eventsContainer, spinner) {
+
+    let str="&q=";
+    let taglist= $('.filter-tag');
+    for(let i=0;i<taglist.length;i++)
+        str=str+(taglist[i].innerText)+';';
+        
     // Fetch Events from the Server
-    $.get(`/api/events?skip=${loadedEventsCount}&count=${loadAmount}`)
+    $.get(`/api/events?skip=${loadedEventsCount}&count=${loadAmount}`+str)
     .then((events)=>{
         // Append each event to the events container
         events.forEach((event)=>{

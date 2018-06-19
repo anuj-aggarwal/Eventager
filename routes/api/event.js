@@ -8,7 +8,23 @@ const models = require("../../models");
 // GET Route for events
 route.get('/', (req,res)=>{
     // Get all the events
-    models.Event.find()
+    let filterTags;
+    if(req.query.q)
+        filterTags= req.query.q.split(";").map(tag => tag.trim()).filter(tag => tag !== "")
+    if(filterTags){
+        models.Event.find({tags: {"$all":filterTags}})
+            .skip(parseInt(req.query.skip))
+            .limit(parseInt(req.query.count))
+            .then((events)=>{
+                // Send all events to user
+                res.send(events);
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+    }
+    else{
+        models.Event.find()
         .skip(parseInt(req.query.skip))
         .limit(parseInt(req.query.count))
         .then((events)=>{
@@ -18,6 +34,7 @@ route.get('/', (req,res)=>{
         .catch((err)=>{
             console.log(err);
         })
+    }
 });
 
 

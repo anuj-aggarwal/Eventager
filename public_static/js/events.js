@@ -1,5 +1,6 @@
 let loadedEventsCount = 0;  // Events loaded till now
 let areEventsLeft = true;  // Are we done fetching all events available?
+let areFetchingEvents = false;
 const loadAmount = 3; // Events to load at a time
 
 $(()=>{
@@ -14,7 +15,8 @@ $(()=>{
 
     // When User reaches end of Page
     $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height() === $(document).height() && areEventsLeft) {
+        if($(window).scrollTop() + $(window).height() === $(document).height() && areEventsLeft &&!areFetchingEvents) {
+            areFetchingEvents = true;
             // Show spinner
             spinner.show();
             // Load the events( Delay of 500ms to improve UI)
@@ -47,6 +49,8 @@ function loadAndAppendEvents(eventsContainer, spinner) {
 
         // Update the count of events loaded till now
         loadedEventsCount += events.length;
+
+        areFetchingEvents = false;
     })
     .catch((err)=>{
         console.log(err);

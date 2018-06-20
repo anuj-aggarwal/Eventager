@@ -1,5 +1,6 @@
 let loadedComments = 0;
 let areCommentsLeft = true;
+let areLoadingComments = false;
 const loadAmount = 3;
 let userId = null;
 
@@ -38,7 +39,9 @@ $(() => {
     });
 
     $('#loadComments').click(() => {
-        if (areCommentsLeft) {
+        if (areCommentsLeft &&!areLoadingComments) {
+            areLoadingComments = true;
+
             spinner.show();
             setTimeout(() => {
                 loadComments(commentBox, eventId, spinner);
@@ -116,6 +119,8 @@ function appendComment(commentBox, comment) {
             </div>
         </div>        
     `);
+
+    ++loadedComments;
 
 
     // Load replies on Appending comment
@@ -255,6 +260,7 @@ function loadComments(commentBox, eventId, spinner) {
         }
 
         loadedComments += comments.length;
+        areLoadingComments = false;
 
     }).catch((err) => {
         console.log(err);

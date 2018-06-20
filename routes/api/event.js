@@ -6,12 +6,20 @@ const models = require("../../models");
 
 const { checkAPILoggedIn } = require("../../utils/auth");
 
+
 // GET Route for events
 route.get('/', (req,res)=>{
+    var sortBy;
+    if(req.query.sortBy.localeCompare("trending")==0)
+        sortBy="numPeopleAttending";
+    else if (req.query.sortBy.localeCompare("recent")==0)
+        sortBy="dateTime";
+    console.log(sortBy);
     // Get all the events
     models.Event.find()
         .skip(parseInt(req.query.skip))
         .limit(parseInt(req.query.count))
+        .sort([[sortBy, -1]])
         .then((events)=>{
             // Send all events to user
             res.send(events);
@@ -71,6 +79,33 @@ route.post('/:id/comments', checkAPILoggedIn, (req, res) => {
         .catch((err) => {
             console.log(err);
         })
+});
+
+
+route.post('/:id/organizers', (req, res) => {
+    models.Event.findById(req.params.id)
+        .then((event) => {
+            return models.User.findOne({
+                username: req.body.username
+            })
+                .then((user) => {
+                    if (!user) return new Error("No such Username exists!");
+                    if (event.organizers.findIndex(organizer => user._id.equals(organizer)) != -1)
+                        res.send({ err: "User already exists" });
+                    else
+                        event.organizers.push(user._id);
+                    return event.save();
+                });
+        })
+        .then(event => {
+            return event.populate("organizers").execPopulate();
+        })
+        .then((nevent) => {
+            let length = nevent.organizers.length;
+            if (!res.headersSent)
+                res.send({ organizer: nevent.organizers[length - 1].name });
+        })
+        .catch(err => console.log(err));
 });
 
 

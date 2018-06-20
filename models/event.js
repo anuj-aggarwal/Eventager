@@ -20,6 +20,10 @@ const eventSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     }],
+    numPeopleAttending: {
+        type: Number, 
+        default: 0
+    },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "comment"

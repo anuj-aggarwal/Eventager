@@ -4,6 +4,8 @@ const route = require('express').Router();
 // Require Models
 const models = require("../models");
 
+const { checkLoggedIn } = require("../utils/auth");
+
 // GET Route for all Events Page
 route.get('/', (req, res) => {
     res.render('events');
@@ -11,12 +13,12 @@ route.get('/', (req, res) => {
 
 
 // GET Route for New Event Page
-route.get('/new', (req, res) => {
+route.get('/new', checkLoggedIn, (req, res) => {
     res.render('newevent');
 });
 
 // POST Route for New Event
-route.post("/", (req, res) => {
+route.post("/", checkLoggedIn, (req, res) => {
     // Create a new Event
     models.Event.create({
         ...req.body,

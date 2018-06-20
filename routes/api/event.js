@@ -4,6 +4,7 @@ const route = require('express').Router();
 // Require Models
 const models = require("../../models");
 
+const { checkAPILoggedIn } = require("../../utils/auth");
 
 
 // GET Route for events
@@ -51,7 +52,7 @@ route.get('/:id/comments', (req, res) => {
 
 
 // Post Route for creating new comment to Event(not to another comment)
-route.post('/:id/comments', (req, res) => {
+route.post('/:id/comments', checkAPILoggedIn, (req, res) => {
     // Create new comment with specified details
     models.Comment.create({
         body: req.body.body,

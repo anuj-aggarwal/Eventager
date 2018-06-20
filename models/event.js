@@ -28,6 +28,7 @@ const eventSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "comment"
     }],
+    imageUrl: String,
     createdAt: {
         type: Date,
         default: Date.now

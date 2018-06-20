@@ -63,6 +63,8 @@ route.delete('/:id', checkAPILoggedIn, (req, res)=>{
         user: req.user._id
     })
         .then((comment)=>{
+            if (comment === null)
+                return res.status(404).send("No such comment found for current user");
             // Send the deleted comment to the user
             console.log("Deleted: " + comment);
             res.send(comment);

@@ -35,13 +35,19 @@ route.get('/:id/comments', (req, res) => {
     // Find comments with the event id in params
     // Send comments after skipping 'skip' comments
     // Sen 'limit' comments
-    models.Comment.find({event: req.params.id})
+    models.Comment.find({
+        event: req.params.id
+    })
+        .sort([["createdAt", "descending"]])
         .skip(parseInt(req.query.skip))
         .limit(parseInt(req.query.count))
         // Populate the User and Replies' user in comment
         .populate('user')
         .populate('replies.user')
         .then((comments) => {
+            if (comments === null)
+                return res.send([]);
+            comments.forEach(comment => comment.replies.sort((a, b) => (new Date(b.createdAt) - new Date(a.createdAt))));
             // Send comments to user
             res.send(comments);
         })

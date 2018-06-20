@@ -18,8 +18,16 @@ const commentSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "user"
         },
-        body: String
-    }]
+        body: String,
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 }, {
     usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });

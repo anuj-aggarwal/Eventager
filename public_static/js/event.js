@@ -28,8 +28,9 @@ $(() => {
                 body: commentTextArea.val().trim()
             })
                 .then((comment) => {
+                    ++loadedComments;
                     // Append the new comment to the comments Box
-                    appendComment(commentBox, comment);
+                    addComment(commentBox, comment, false);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -75,8 +76,8 @@ $(() => {
 
 
 // Function to append a single comment to the Comments Box DOM
-function appendComment(commentBox, comment) {
-    commentBox.append(`
+function addComment(commentBox, comment, isAppend = true) {
+    const commentHTML = `
         <!-- Comment -->
         <div data-id="${comment._id}" class="media mb-4">
             <!-- User Avatar -->
@@ -118,10 +119,14 @@ function appendComment(commentBox, comment) {
                 </div>
             </div>
         </div>        
-    `);
-
-    ++loadedComments;
-
+    `;
+    
+    if (isAppend) {
+        commentBox.append(commentHTML);
+    }
+    else {
+        commentBox.prepend(commentHTML);
+    }
 
     // Load replies on Appending comment
     const replyBox = $(`[data-id="${comment._id}"] .replies`);
@@ -171,7 +176,7 @@ function appendComment(commentBox, comment) {
             })
                 .then((reply) => {
                     // Append the reply to current comment and clear TextArea
-                    appendReply(replyBox, reply, comment._id);
+                    addReply(replyBox, reply, comment._id, false);
                     replyTextArea.val('');
                 })
                 .catch((err) => {
@@ -249,7 +254,7 @@ function loadComments(commentBox, eventId, spinner) {
     $.get(`/api/events/${eventId}/comments?skip=${loadedComments}&count=${loadAmount}`).then((comments) => {
         // Append each comment to commentBox
         comments.forEach((comment) => {
-            appendComment(commentBox, comment);
+            addComment(commentBox, comment);
         });
 
         spinner.hide();
@@ -263,13 +268,13 @@ function loadComments(commentBox, eventId, spinner) {
         areLoadingComments = false;
 
     }).catch((err) => {
-        console.log(err);
+        console.log(err.stack);
     });
 }
 
 // Function to Append a reply to the replyBox
-function appendReply(replyBox, reply, commentId) {
-    replyBox.append(`
+function addReply(replyBox, reply, commentId, isAppend = true) {
+    const replyHTML = `
         <div data-id="${reply._id}" class="media mt-4">
             <!-- Avatar -->
             <img class="d-flex mr-3 rounded-circle avatar" src="https://en.opensuse.org/images/0/0b/Icon-user.png" alt="">
@@ -289,7 +294,11 @@ function appendReply(replyBox, reply, commentId) {
                 <div class="reply-text">${reply.body}</div>
             </div>
         </div>
-    `);
+    `;
+    if (isAppend)
+        replyBox.append(replyHTML);
+    else
+        replyBox.prepend(replyHTML);
 
     // Edit Button of Reply
     const replyEditButton = $(`[data-id="${reply._id}"] .edit-reply-button`);
@@ -353,6 +362,6 @@ function appendReply(replyBox, reply, commentId) {
 function loadReplies(replyBox, comment) {
     replyBox.html('');
     comment.replies.forEach((reply) => {
-        appendReply(replyBox, reply, comment._id);
+        addReply(replyBox, reply, comment._id);
     });
 }

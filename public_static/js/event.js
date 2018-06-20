@@ -125,7 +125,8 @@ function addComment(commentBox, comment, isAppend = true) {
         commentBox.append(commentHTML);
     }
     else {
-        commentBox.prepend(commentHTML);
+        const $comment = commentBox.prepend(commentHTML);
+        $("html, body").animate({ scrollTop: $comment.offset().top - 150 }, 500);
     }
 
     // Load replies on Appending comment
@@ -297,8 +298,11 @@ function addReply(replyBox, reply, commentId, isAppend = true) {
     `;
     if (isAppend)
         replyBox.append(replyHTML);
-    else
-        replyBox.prepend(replyHTML);
+    else {
+        const $reply = replyBox.prepend(replyHTML);
+        if (!$reply.is(":hidden"))
+            $("html, body").animate({ scrollTop: $reply.offset().top - 150 }, 500);
+    }
 
     // Edit Button of Reply
     const replyEditButton = $(`[data-id="${reply._id}"] .edit-reply-button`);

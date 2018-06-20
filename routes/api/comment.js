@@ -4,8 +4,10 @@ const route = require('express').Router();
 // Require Models
 const models = require("../../models");
 
+const { checkAPILoggedIn } = require("../../utils/auth");
+
 // POST Route for Replying to a comment
-route.post('/', (req,res)=>{
+route.post('/', checkAPILoggedIn, (req,res)=>{
     // Find the required comment
     models.Comment.findById(req.body.commentId)
     .then((comment)=>{
@@ -31,25 +33,35 @@ route.post('/', (req,res)=>{
 
 
 // PATCH Request for updating a comment's Body
-route.patch('/:id', (req,res)=>{
+route.patch('/:id', checkAPILoggedIn, (req,res)=>{
     // Find the comment and update the body of comment
-    models.Comment.findByIdAndUpdate(req.params.id, {
+    models.Comment.findOneAndUpdate({
+        _id: req.params.id,
+        user: req.user._id
+    }, {
         body: req.body.body
     })
-    .then((comment)=>{
-        // Send the new comment to user
-        res.send(comment);
-    })
-    .catch((err)=>{
-        console.log(err);
-    })
+        .then(comment => {
+            // Comment not found or user is wrong
+            if (comment === null) {
+                return res.status(404).send("No such Comment found for current user");
+            }
+            // Send the new comment to user
+            res.send(comment);
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
 });
 
 
 // DELETE Request for deleting a comment
-route.delete('/:id', (req, res)=>{
+route.delete('/:id', checkAPILoggedIn, (req, res)=>{
     // Find the comment and delete it
-    models.Comment.findByIdAndRemove(req.params.id)
+    models.Comment.findOneAndRemove({
+        _id: req.params.id,
+        user: req.user._id
+    })
         .then((comment)=>{
             // Send the deleted comment to the user
             console.log("Deleted: " + comment);
@@ -57,59 +69,74 @@ route.delete('/:id', (req, res)=>{
         })
         .catch((err)=>{
             console.log(err);
-        })
+        });
 });
 
 
 // PATCH Request to Edit a Reply Text
-route.patch('/:id/replies/:replyId', (req, res)=>{
+route.patch('/:id/replies/:replyId', checkAPILoggedIn, (req, res)=>{
     // Find the Comment to be edited
    models.Comment.findById(req.params.id)
-       .then((comment)=>{
+        .then((comment)=>{
+            if (comment === null) {
+                return res.status(404).send("Comment not found!");
+            }
             // Find the reply to be edited
-            comment.replies.forEach((reply)=>{
-                if(reply._id.toString() === req.params.replyId){
-                    // If current reply is required reply
-                    reply.body = req.body.body;
-                    comment.save()
-                    .then((comment)=>{
-                        // Populate the user
-                        return models.Comment.populate(reply, 'user');
-                    })
-                }
-            });
-       })
+            const reply = comment.replies.find(reply => reply._id.equals(req.params.replyId));
+            if (!reply)
+                return res.status(404).send("No Such Reply Found in the Comment!");
+            
+            if (!reply.user.equals(req.user._id)) {
+                return res.status(401).send("Cannot Edit other user's Posts");
+            }
+            reply.body = req.body.body;
+
+            return comment.save()
+                .then(()=>{
+                    // Populate the user
+                    return models.Comment.populate(reply, 'user');
+                });
+        })
         .then((comment)=>{
             // Send the comment with updated reply to user
-            res.send(comment);
-       })
-       .catch((err)=>{
+            if (!res.headersSent)
+                res.send(comment);
+        })
+        .catch((err)=>{
             console.log(err);
-       })
+        });
 });
 
 
 // DELETE Request to Delete a Reply Text
-route.delete('/:id/replies/:replyId', (req, res)=>{
+route.delete('/:id/replies/:replyId', checkAPILoggedIn, (req, res)=>{
     // Find the Comment to be edited
     models.Comment.findById(req.params.id)
         .then((comment)=>{
+            if (comment === null) {
+                return res.status(404).send("Comment not found!");
+            }
+
             // Find the reply to be edited
-            comment.replies.forEach((reply, index, replies)=>{
-                if(reply._id.toString() === req.params.replyId){
-                    // If current reply is required reply
-                    replies.splice(index, 1);
-                    comment.save()
-                    .then(()=>{
-                        // Send Deleted Reply to user
-                        return res.send(reply);
-                    })
-                }
-            });
+            const replyIndex = comment.replies.findIndex(reply => reply._id.equals(req.params.replyId));
+            if (replyIndex === -1) {
+                return res.status(404).send("Reply not found!");
+            }
+            if (!comment.replies[replyIndex].user.equals(req.user._id)) {
+                return res.status(401).send("Cannot delete other user's reply!");
+            }
+
+            // If current reply is required reply
+            comment.replies.splice(replyIndex, 1);
+            return comment.save()
+                .then(()=>{
+                    // Send Deleted Reply to user
+                    return res.send(comment.replies[replyIndex]);
+                });
         })
         .catch((err)=>{
             console.log(err);
-        })
+        });
 });
 
 // Export the Router

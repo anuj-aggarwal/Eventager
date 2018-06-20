@@ -27,7 +27,11 @@ const eventSchema = mongoose.Schema({
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "comment"
-    }]
+    }],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 }, {
     usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });

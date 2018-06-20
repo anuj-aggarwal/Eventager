@@ -1,9 +1,10 @@
 let loadedComments = 0;
 let areCommentsLeft = true;
 const loadAmount = 3;
+let userId = null;
 
 $(() => {
-
+    userId = $("#user-id").data("user-id");
     const spinner = $('#commentSpinner');
     spinner.hide();
     // Id of current Event
@@ -61,8 +62,11 @@ function appendComment(commentBox, comment) {
                 <!-- Username -->
                 <h5 class="mt-0">
                     ${comment.user.username}
-                    <a class="pull-right actions delete-button"><i class="fa fa-trash-o"></i></a>
-                    <a class="pull-right actions edit-button"><i class="fa fa-pencil-square-o"></i></a>
+                    ${comment.user._id === userId ? `
+                        <a class="pull-right actions delete-button"><i class="fa fa-trash-o"></i></a>
+                        <a class="pull-right actions edit-button"><i class="fa fa-pencil-square-o"></i></a>
+                    `: ""}
+                    
                 </h5>
                 <!-- Body -->
                 <div class="comment-text">${comment.body}</div>
@@ -79,10 +83,14 @@ function appendComment(commentBox, comment) {
                 
                 <!-- Reply Form: Initially Hidden -->
                 <div class="reply-form">
-                    <div class="form-group mt-3">
-                        <textarea class="form-control comment-text-area" rows="2"></textarea>
-                    </div>
-                    <button class="btn btn-primary comment-button">Submit</button>
+                    ${userId ? `
+                        <div class="form-group mt-3">
+                            <textarea class="form-control comment-text-area" rows="2"></textarea>
+                        </div>
+                        <button class="btn btn-primary comment-button">Submit</button>
+                    `: `
+                        <a href="/loginsignup" class="btn btn-danger">Login to reply!</a>
+                    `}
                 </div>
             </div>
         </div>        
@@ -243,10 +251,12 @@ function appendReply(replyBox, reply, commentId) {
                 <!-- Username -->
                 <h5 class="mt-0">
                     ${reply.user.username}
-                    <!-- Delete Button -->
-                    <a class="pull-right actions delete-reply-button"><i class="fa fa-trash-o"></i></a>
-                    <!-- Edit Button -->
-                    <a class="pull-right actions edit-reply-button"><i class="fa fa-pencil-square-o"></i></a>
+                    ${reply.user._id === userId ? `
+                        <!-- Delete Button -->
+                        <a class="pull-right actions delete-reply-button"><i class="fa fa-trash-o"></i></a>
+                        <!-- Edit Button -->
+                        <a class="pull-right actions edit-reply-button"><i class="fa fa-pencil-square-o"></i></a>
+                    `: ""}
                 </h5>
                 <!-- Body -->
                 <div class="reply-text">${reply.body}</div>

@@ -1,33 +1,50 @@
+const fs = require("fs");
 // Create Router
 const route = require('express').Router();
 
 // Require Models
 const models = require("../models");
 
+const { checkLoggedIn } = require("../utils/auth");
+const { upload, cloudinary } = require("../utils/images");
+
 // GET Route for all Events Page
-route.get('/', (req,res)=>{
-    let filterTags, filterString;
-    if(req.query.q){
-        filterTags= req.query.q.split(";").map(tag => tag.trim()).filter(tag => tag !== "");
-        filterString = filterTags.reduce((acc, tag) => acc + tag + ";", "");
-    }
-    res.render('events', {filterTags, filterString} );
+route.get('/', (req, res) => {
+    res.render('events');
 });
 
 
 // GET Route for New Event Page
-route.get('/new', (req, res) => {
+route.get('/new', checkLoggedIn, (req, res) => {
     res.render('newevent');
 });
 
-// POST Route for New Event
-route.post("/", (req, res) => {
-    // Create a new Event
-    models.Event.create({
+
+// Upload Image to Cloudinary and Create Event
+const uploadImageandCreateEvent = req => {
+    if (req.file) {
+        return cloudinary.uploader.upload(req.file.path)
+            .then(result => {
+                // Remove Image from File System
+                fs.unlink(req.file.path);
+                return models.Event.create({
+                    ...req.body,
+                    organizers: [req.user._id],
+                    imageUrl: result.url
+                });
+            });
+    }
+
+    return models.Event.create({
         ...req.body,
         tags: req.body.tags.split(";").map(tag => tag.trim()).filter(tag => tag !== ""),
         organizers: [req.user._id]
-    })
+    });
+};
+
+// POST Route for New Event
+route.post("/", checkLoggedIn, upload.single('image'), (req, res) => {
+    uploadImageandCreateEvent(req)
         .then((event) => {
             // Redirect to the new Event Page
             res.redirect(`/events/${event._id}`);
@@ -47,11 +64,12 @@ route.post('/filter', (req,res) => {
 route.get('/:id', (req, res) => {
     // Find the Event
     models.Event.findById(req.params.id)
+        .populate("organizers")
         .then((event) => {
             if (event === null)
                 throw Error('Event does not exists!!');
             // If event found, Render the Event Page with event's details
-            res.render('event', {event});
+            res.render('event', { event });
         })
         .catch((err) => {
             // If event not found or other Errors,

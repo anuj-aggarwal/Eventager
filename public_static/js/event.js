@@ -1,9 +1,11 @@
 let loadedComments = 0;
 let areCommentsLeft = true;
+let areLoadingComments = false;
 const loadAmount = 3;
+let userId = null;
 
 $(() => {
-
+    userId = $("#user-id").data("user-id");
     const spinner = $('#commentSpinner');
     spinner.hide();
     // Id of current Event
@@ -26,8 +28,9 @@ $(() => {
                 body: commentTextArea.val().trim()
             })
                 .then((comment) => {
+                    ++loadedComments;
                     // Append the new comment to the comments Box
-                    appendComment(commentBox, comment);
+                    addComment(commentBox, comment, false);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -36,22 +39,45 @@ $(() => {
         }
     });
 
-    $('#loadComments').click(()=> {
-        if(areCommentsLeft){
+    $('#loadComments').click(() => {
+        if (areCommentsLeft &&!areLoadingComments) {
+            areLoadingComments = true;
+
             spinner.show();
-            setTimeout(()=>{
+            setTimeout(() => {
                 loadComments(commentBox, eventId, spinner);
             }, 500);
         }
     })
 
+    $('#addOrganizer').click((event) => {
+        $(event.target).next().toggle();
+    });
 
+    $('#organizer-form').submit((e) => {
+        e.preventDefault();
+        const input = $('#organizer-inp');
+        if (input.val().trim() != "") {
+            $.post('/api/events/' + eventId + '/organizers', {
+                username: input.val().trim()
+            })
+                .then(({ err, organizer }) => {
+                    if (!err)
+                        $('#organizer-list').append('<li>' + organizer + '</li>');
+                    input.val('');
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.send({ err: "Internal Server Error!" });
+                });
+        }
+    });
 });
 
 
 // Function to append a single comment to the Comments Box DOM
-function appendComment(commentBox, comment) {
-    commentBox.append(`
+function addComment(commentBox, comment, isAppend = true) {
+    const commentHTML = `
         <!-- Comment -->
         <div data-id="${comment._id}" class="media mb-4">
             <!-- User Avatar -->
@@ -61,8 +87,11 @@ function appendComment(commentBox, comment) {
                 <!-- Username -->
                 <h5 class="mt-0">
                     ${comment.user.username}
-                    <a class="pull-right actions delete-button"><i class="fa fa-trash-o"></i></a>
-                    <a class="pull-right actions edit-button"><i class="fa fa-pencil-square-o"></i></a>
+                    ${comment.user._id === userId ? `
+                        <a class="pull-right actions delete-button"><i class="fa fa-trash-o"></i></a>
+                        <a class="pull-right actions edit-button"><i class="fa fa-pencil-square-o"></i></a>
+                    `: ""}
+                    
                 </h5>
                 <!-- Body -->
                 <div class="comment-text">${comment.body}</div>
@@ -79,15 +108,26 @@ function appendComment(commentBox, comment) {
                 
                 <!-- Reply Form: Initially Hidden -->
                 <div class="reply-form">
-                    <div class="form-group mt-3">
-                        <textarea class="form-control comment-text-area" rows="2"></textarea>
-                    </div>
-                    <button class="btn btn-primary comment-button">Submit</button>
+                    ${userId ? `
+                        <div class="form-group mt-3">
+                            <textarea class="form-control comment-text-area" rows="2"></textarea>
+                        </div>
+                        <button class="btn btn-primary comment-button">Submit</button>
+                    `: `
+                        <a href="/loginsignup" class="btn btn-danger">Login to reply!</a>
+                    `}
                 </div>
             </div>
         </div>        
-    `);
-
+    `;
+    
+    if (isAppend) {
+        commentBox.append(commentHTML);
+    }
+    else {
+        const $comment = commentBox.prepend(commentHTML);
+        $("html, body").animate({ scrollTop: $comment.offset().top - 150 }, 500);
+    }
 
     // Load replies on Appending comment
     const replyBox = $(`[data-id="${comment._id}"] .replies`);
@@ -137,7 +177,7 @@ function appendComment(commentBox, comment) {
             })
                 .then((reply) => {
                     // Append the reply to current comment and clear TextArea
-                    appendReply(replyBox, reply, comment._id);
+                    addReply(replyBox, reply, comment._id, false);
                     replyTextArea.val('');
                 })
                 .catch((err) => {
@@ -167,7 +207,7 @@ function appendComment(commentBox, comment) {
             $.ajax({
                 url: `/api/comments/${comment._id}`,
                 type: 'PATCH',
-                data: {body: newText}
+                data: { body: newText }
             })
                 .then((data) => {
                     // Change icon back to edit once edited
@@ -215,26 +255,27 @@ function loadComments(commentBox, eventId, spinner) {
     $.get(`/api/events/${eventId}/comments?skip=${loadedComments}&count=${loadAmount}`).then((comments) => {
         // Append each comment to commentBox
         comments.forEach((comment) => {
-            appendComment(commentBox, comment);
+            addComment(commentBox, comment);
         });
 
         spinner.hide();
 
-        if(comments.length < loadAmount){
+        if (comments.length < loadAmount) {
             areCommentsLeft = false;
             $('#loadComments').hide();
         }
 
         loadedComments += comments.length;
+        areLoadingComments = false;
 
     }).catch((err) => {
-        console.log(err);
+        console.log(err.stack);
     });
 }
 
 // Function to Append a reply to the replyBox
-function appendReply(replyBox, reply, commentId) {
-    replyBox.append(`
+function addReply(replyBox, reply, commentId, isAppend = true) {
+    const replyHTML = `
         <div data-id="${reply._id}" class="media mt-4">
             <!-- Avatar -->
             <img class="d-flex mr-3 rounded-circle avatar" src="https://en.opensuse.org/images/0/0b/Icon-user.png" alt="">
@@ -243,21 +284,30 @@ function appendReply(replyBox, reply, commentId) {
                 <!-- Username -->
                 <h5 class="mt-0">
                     ${reply.user.username}
-                    <!-- Delete Button -->
-                    <a class="pull-right actions delete-reply-button"><i class="fa fa-trash-o"></i></a>
-                    <!-- Edit Button -->
-                    <a class="pull-right actions edit-reply-button"><i class="fa fa-pencil-square-o"></i></a>
+                    ${reply.user._id === userId ? `
+                        <!-- Delete Button -->
+                        <a class="pull-right actions delete-reply-button"><i class="fa fa-trash-o"></i></a>
+                        <!-- Edit Button -->
+                        <a class="pull-right actions edit-reply-button"><i class="fa fa-pencil-square-o"></i></a>
+                    `: ""}
                 </h5>
                 <!-- Body -->
                 <div class="reply-text">${reply.body}</div>
             </div>
         </div>
-    `);
+    `;
+    if (isAppend)
+        replyBox.append(replyHTML);
+    else {
+        const $reply = replyBox.prepend(replyHTML);
+        if (!$reply.is(":hidden"))
+            $("html, body").animate({ scrollTop: $reply.offset().top - 150 }, 500);
+    }
 
     // Edit Button of Reply
     const replyEditButton = $(`[data-id="${reply._id}"] .edit-reply-button`);
     // On editing the Reply Text
-    replyEditButton.click((event)=> {
+    replyEditButton.click((event) => {
         // Fetch the Reply text to be changed
         const replyText = $(`[data-id="${reply._id}"] .reply-text`);
         if (replyEditButton.html() === '<i class="fa fa-pencil-square-o"></i>') {
@@ -272,7 +322,7 @@ function appendReply(replyBox, reply, commentId) {
             $.ajax({
                 url: `/api/comments/${commentId}/replies/${reply._id}`,
                 type: 'PATCH',
-                data: {body: newReply}
+                data: { body: newReply }
             })
                 .then((data) => {
                     // Change button to Edit Button back
@@ -287,7 +337,7 @@ function appendReply(replyBox, reply, commentId) {
 
     // Delete Button of Reply
     const deleteReplyButton = $(`[data-id="${reply._id}"] .delete-reply-button`);
-    deleteReplyButton.click((event)=>{
+    deleteReplyButton.click((event) => {
         // Confirm Delete
         let confirmDelete = confirm("Confirm Delete?");
         if (confirmDelete) {
@@ -316,6 +366,6 @@ function appendReply(replyBox, reply, commentId) {
 function loadReplies(replyBox, comment) {
     replyBox.html('');
     comment.replies.forEach((reply) => {
-        appendReply(replyBox, reply, comment._id);
+        addReply(replyBox, reply, comment._id);
     });
 }

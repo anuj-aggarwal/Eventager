@@ -49,6 +49,10 @@ hr.styled {
     display: none;
 }
 
+#organizer-form {
+    display: none;
+}
+
 /* Hide the Replies of Comments in starting */
 /* To be Shown only on pressing Show Replies Button */
 .replies {

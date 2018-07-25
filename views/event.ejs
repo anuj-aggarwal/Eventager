@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col-md-8">
             <!-- Event Image -->
-            <img class="img-fluid" src="http://placehold.it/750x400" alt="Event Image here">
+            <img class="img-fluid" src="<%= event.imageUrl || 'https://via.placeholder.com/750x400' %>" alt="Event Image here">
 
             <!-- Event Description Card -->
             <div class="card mt-4">
@@ -80,10 +80,14 @@
                 <h5 class="card-header">Leave a Comment:</h5>
                 <div class="card-body">
                     <div>
-                        <div class="form-group">
-                            <textarea id="comment-text" class="form-control" rows="3"></textarea>
-                        </div>
-                        <button id="comment-button" class="btn btn-primary">Submit</button>
+                        <% if (user) { %>
+                            <div class="form-group">
+                                <textarea id="comment-text" class="form-control" rows="3"></textarea>
+                            </div>
+                            <button id="comment-button" class="btn btn-primary">Submit</button>
+                        <% } else { %>
+                            <a href="/loginsignup" class="btn btn-danger">Login to comment!</a>
+                        <% } %>
                     </div>
                 </div>
             </div>  <!-- END Comments Form -->
@@ -122,11 +126,20 @@
                         <!-- Organizers -->
                         <li>
                             <b>Organizers: </b>
-                            <ul>
+                            <ul id="organizer-list">
                                 <% event.organizers.forEach((organizer) => { %>
-                                <li><%= organizer %></li>
+                                <li><%= organizer.name %></li>
                                 <% }) %>
                             </ul>
+                            <% if(event.organizers.findIndex(element=> element._id.equals(user._id)) != -1) { %>
+                                <button id="addOrganizer" class="btn btn-primary">Add Organizer</button>
+                                <form id="organizer-form">
+                                    <div class="form-group">
+                                        <input id="organizer-inp" type="text" class="form-control mt-2"></input>
+                                    </div>
+                                    <button id="organizer-submit" class="btn btn-info">Submit</button>
+                                </form>
+                            <% } %>                        
                         </li>
                     </ul>
                 </div>

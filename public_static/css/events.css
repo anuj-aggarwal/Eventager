@@ -10,9 +10,9 @@ a:hover {
     color: inherit;
 }
 
-
 .event-img {
-    width: 30vh;
+    width: 20%;
+    max-height: 200px;
 }
 
 .event-name {

@@ -1,3 +1,4 @@
+const fs = require("fs");
 // Create Router
 const route = require('express').Router();
 
@@ -5,6 +6,7 @@ const route = require('express').Router();
 const models = require("../models");
 
 const { checkLoggedIn } = require("../utils/auth");
+const { upload, cloudinary } = require("../utils/images");
 
 // GET Route for all Events Page
 route.get('/', (req, res) => {
@@ -17,13 +19,31 @@ route.get('/new', checkLoggedIn, (req, res) => {
     res.render('newevent');
 });
 
-// POST Route for New Event
-route.post("/", checkLoggedIn, (req, res) => {
-    // Create a new Event
-    models.Event.create({
+
+// Upload Image to Cloudinary and Create Event
+const uploadImageandCreateEvent = req => {
+    if (req.file) {
+        return cloudinary.uploader.upload(req.file.path)
+            .then(result => {
+                // Remove Image from File System
+                fs.unlink(req.file.path);
+                return models.Event.create({
+                    ...req.body,
+                    organizers: [req.user._id],
+                    imageUrl: result.url
+                });
+            });
+    }
+
+    return models.Event.create({
         ...req.body,
         organizers: [req.user._id]
-    })
+    });
+};
+
+// POST Route for New Event
+route.post("/", checkLoggedIn, upload.single('image'), (req, res) => {
+    uploadImageandCreateEvent(req)
         .then((event) => {
             // Redirect to the new Event Page
             res.redirect(`/events/${event._id}`);

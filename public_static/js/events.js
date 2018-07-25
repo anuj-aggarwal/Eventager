@@ -64,7 +64,7 @@ function appendEvent(eventsContainer, event) {
             <div class="card event-card mb-3">
                 <div class="card-body">
                     <div class="media">
-                        <img class="d-flex mr-5 event-img" src="http://placehold.it/200x200" alt="">
+                        <img class="d-flex mr-5 event-img" src="${ event.imageUrl || "http://placehold.it/200x200" }" alt="">
                         <div class="media-body">
                             <h5 class="event-name">${event.name}</h5>
                             <div class="event-description">

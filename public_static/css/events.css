@@ -10,13 +10,19 @@ a:hover {
     color: inherit;
 }
 
-
 .event-img {
-    width: 30vh;
+    width: 20%;
+    max-height: 200px;
 }
 
 .event-name {
     font-size: 2rem;
+}
+
+.event-tag {
+    font-size: 1rem;
+    vertical-align: middle;
+    margin-top: -0.5em;
 }
 
 .event-card:hover {

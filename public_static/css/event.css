@@ -1,3 +1,18 @@
+/* Styles for Badges */
+#event-heading {
+    vertical-align: middle;
+}
+.badge {
+    vertical-align: middle;
+    font-size: 15px;
+    margin-top: -0.5em;
+}
+.tag {
+    vertical-align: middle;
+    display: inline-block;
+    margin: auto 5px;
+}
+
 /* Styles for hr in Description and Comment Cards */
 hr.styled {
     border: 0;
@@ -31,6 +46,10 @@ hr.styled {
 /* Hide the Reply Form in Starting */
 /* To be Shown only on pressing Reply Button */
 .reply-form {
+    display: none;
+}
+
+#organizer-form {
     display: none;
 }
 

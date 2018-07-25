@@ -20,10 +20,19 @@ const eventSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     }],
+    numPeopleAttending: {
+        type: Number, 
+        default: 0
+    },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "comment"
-    }]
+    }],
+    imageUrl: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 }, {
     usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });

@@ -26,9 +26,9 @@
                     </a>
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu" aria-labelledby="eventsDropdown">
-                        <a class="dropdown-item" href="#">Trending Events</a>
-                        <a class="dropdown-item" href="#">Recent Events</a>
-                        <a class="dropdown-item" href="/events">All Events</a>
+                        <a class="dropdown-item" href="/events?sortBy=trending">Trending Events</a>
+                        <a class="dropdown-item" href="/events?sortBy=recent">Recent Events</a>
+                        <a class="dropdown-item" href="/events?sortBy=all">All Events</a>
                     </div>
                 </li>
 
@@ -44,7 +44,7 @@
                     <!-- Dropdown -->
                     <a class="nav-link dropdown-toggle" href="#" id="welcomeDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Hi <%= user.username %>!
+                        Hi <span id="user-id" data-user-id="<%= user._id %>"><%= user.username %></span>!
                     </a>
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu" aria-labelledby="welcomeDropdown">

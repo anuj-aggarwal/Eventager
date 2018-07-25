@@ -1,5 +1,6 @@
 let loadedEventsCount = 0;  // Events loaded till now
 let areEventsLeft = true;  // Are we done fetching all events available?
+let areFetchingEvents = false;
 const loadAmount = 3; // Events to load at a time
 
 $(()=>{
@@ -14,7 +15,8 @@ $(()=>{
 
     // When User reaches end of Page
     $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height() === $(document).height() && areEventsLeft) {
+        if($(window).scrollTop() + $(window).height() === $(document).height() && areEventsLeft &&!areFetchingEvents) {
+            areFetchingEvents = true;
             // Show spinner
             spinner.show();
             // Load the events( Delay of 500ms to improve UI)
@@ -30,8 +32,14 @@ $(()=>{
 // and append them to Events Container in DOM
 // use: appendEvent
 function loadAndAppendEvents(eventsContainer, spinner) {
+
+    let str="&q=";
+    let taglist= $('.filter-tag');
+    for(let i=0;i<taglist.length;i++)
+        str=str+(taglist[i].innerText)+';';
+
     // Fetch Events from the Server
-    $.get(`/api/events?skip=${loadedEventsCount}&count=${loadAmount}`)
+    $.get(`/api/events${window.location.search}&skip=${loadedEventsCount}&count=${loadAmount}&`)
     .then((events)=>{
         // Append each event to the events container
         events.forEach((event)=>{
@@ -47,6 +55,8 @@ function loadAndAppendEvents(eventsContainer, spinner) {
 
         // Update the count of events loaded till now
         loadedEventsCount += events.length;
+
+        areFetchingEvents = false;
     })
     .catch((err)=>{
         console.log(err);
@@ -60,9 +70,15 @@ function appendEvent(eventsContainer, event) {
             <div class="card event-card mb-3">
                 <div class="card-body">
                     <div class="media">
-                        <img class="d-flex mr-5 event-img" src="http://placehold.it/200x200" alt="">
+                        <img class="d-flex mr-5 event-img" src="${ event.imageUrl || "http://placehold.it/200x200" }" alt="">
                         <div class="media-body">
-                            <h5 class="event-name">${event.name}</h5>
+                            <h5 class="event-name">
+                                ${event.name}
+                                ${event.tags.map(tag => {
+                                    console.log(tag);
+                                    return `<span class="event-tag badge badge-pill badge-primary">${tag}</span>`;
+                                }).join(" ")}
+                            </h5>
                             <div class="event-description">
                                 <div class="datetime"><i class="fa fa-clock-o"></i> ${event.dateTime}</div>
                                 <div class="venue"><i class="fa fa-map-marker"></i> ${event.venue}</div>

@@ -9,14 +9,14 @@ const userSchema = mongoose.Schema({
     phoneNumber: String,
     password: String,
     email: String,
-    eventsOrganizing: {
+    eventsOrganizing: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "event"
-    },
-    eventsAttending: {
+    }],
+    eventsAttending: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "event"
-    }
+    }]
 }, {
     usePushEach: true   // UsePushEach to use $pushEach instead of deprecated $pushAll
 });

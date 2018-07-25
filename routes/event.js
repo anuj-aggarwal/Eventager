@@ -69,7 +69,14 @@ route.get('/:id', (req, res) => {
             if (event === null)
                 throw Error('Event does not exists!!');
             // If event found, Render the Event Page with event's details
+<<<<<<< HEAD
+            res.render('event', {
+                event,
+                attending: req.user && event.peopleAttending.indexOf(req.user._id.toString()) !== -1
+            });
+=======
             res.render('event', { event });
+>>>>>>> develop
         })
         .catch((err) => {
             // If event not found or other Errors,

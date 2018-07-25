@@ -5,7 +5,10 @@ const route = require('express').Router();
 const models = require("../../models");
 
 const { checkAPILoggedIn } = require("../../utils/auth");
+<<<<<<< HEAD
+=======
 
+>>>>>>> develop
 
 // GET Route for events
 route.get('/', (req,res)=>{
@@ -101,6 +104,63 @@ route.post('/:id/comments', checkAPILoggedIn, (req, res) => {
 });
 
 
+<<<<<<< HEAD
+// POST Route for Attending/Not Attending Events
+route.post('/:id/attending', checkAPILoggedIn, (req, res) => {
+    let attending = JSON.parse(req.body.attending);
+    let promises = [];
+    
+    const addParticipant = models.Event.findById(req.params.id)
+        .then((event) => {
+            if (!req.user)
+                return new Error('No User Found!');
+
+            if (attending) {
+                let index = event.peopleAttending.indexOf(req.user._id);
+                if (index === -1) {
+                    event.peopleAttending.push(req.user._id);
+                }
+            }
+            else {
+                let index = event.peopleAttending.indexOf(req.user._id);
+                
+                if (index > -1) {
+                    event.peopleAttending.splice(index, 1);
+                }
+            }
+            return event.save();            
+        });
+    
+    promises.push(addParticipant);
+
+    const addEvent = models.User.findById(req.user._id)
+        .then((user) => {
+            if (attending) {
+                let index = user.eventsAttending.indexOf(req.params.id);
+                if (index === -1) {
+                    user.eventsAttending.push(req.params.id);
+                }
+            }
+            else {
+                let index = user.eventsAttending.indexOf(req.params.id);
+                if (index > -1) {
+                    user.eventsAttending.splice(index, 1);
+                }
+            }
+            return user.save();
+        });
+
+    promises.push(addEvent);
+
+    Promise.all(promises)
+        .then(() => {
+            res.send({ err: false });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send({ err: true });
+        })
+=======
 route.post('/:id/organizers', (req, res) => {
     models.Event.findById(req.params.id)
         .then((event) => {
@@ -125,6 +185,7 @@ route.post('/:id/organizers', (req, res) => {
                 res.send({ organizer: nevent.organizers[length - 1].name });
         })
         .catch(err => console.log(err));
+>>>>>>> develop
 });
 
 

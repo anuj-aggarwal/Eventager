@@ -19,6 +19,12 @@ a:hover {
     font-size: 2rem;
 }
 
+.event-tag {
+    font-size: 1rem;
+    vertical-align: middle;
+    margin-top: -0.5em;
+}
+
 .event-card:hover {
     background-color: #eaf0f9;
     box-shadow: #aaaaaa 2px 2px;

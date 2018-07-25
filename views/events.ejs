@@ -27,6 +27,24 @@
     <h1 id="heading" class="text-center my-3">Events</h1>
     <hr class="style14 mb-5">
 
+    <form action="/events/filter" method="POST">
+        <div class="form-group">
+            <input type="hidden" name="old" value="<%= filterString %>">
+            <input type="text" class="form-control" name="filter" placeholder="Enter tags to filter, separated by semicolon">
+        </div>
+    </form>
+
+    <div class="container m-3">
+        <% if(locals.filterTags){ %>
+            <% filterTags.forEach((tag)=>{ %>
+                <span class="filter-tag event-tag badge badge-pill badge-primary">
+                    <%= tag %>
+                    <a href="/events?q=<%=filterString.replace(tag+';','')%>"><i class="fa fa-times filterTagCross" aria-hidden="true"></i></a>
+                </span>
+            <% }) %>
+        <% } %>
+    </div>
+
     <div id="events-container">
         <!-- Individual Events to be added by JS -->
     </div>

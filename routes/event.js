@@ -37,6 +37,7 @@ const uploadImageandCreateEvent = req => {
 
     return models.Event.create({
         ...req.body,
+        tags: req.body.tags.split(";").map(tag => tag.trim()).filter(tag => tag !== ""),
         organizers: [req.user._id]
     });
 };
@@ -55,6 +56,9 @@ route.post("/", checkLoggedIn, upload.single('image'), (req, res) => {
         });
 });
 
+route.post('/filter', (req,res) => {
+    res.redirect('/events?q='+req.body.old+req.body.filter);
+})
 
 // GET Route for a single Event Page
 route.get('/:id', (req, res) => {

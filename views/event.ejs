@@ -32,6 +32,11 @@
         <%= event.name %>
         <!-- Attending People Badge -->
         <span class="badge badge-pill badge-danger"><%= event.peopleAttending.length %></span>
+        <% event.tags.forEach(tag => { %>
+            <span class="tag pull-right">
+                <span class="badge badge-pill badge-primary"><%= tag %></span>
+            </span>
+        <% }) %>
     </h1>
 
     <!-- Event Content -->

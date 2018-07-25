@@ -32,6 +32,12 @@ $(()=>{
 // and append them to Events Container in DOM
 // use: appendEvent
 function loadAndAppendEvents(eventsContainer, spinner) {
+
+    let str="&q=";
+    let taglist= $('.filter-tag');
+    for(let i=0;i<taglist.length;i++)
+        str=str+(taglist[i].innerText)+';';
+
     // Fetch Events from the Server
     $.get(`/api/events${window.location.search}&skip=${loadedEventsCount}&count=${loadAmount}&`)
     .then((events)=>{
@@ -66,7 +72,13 @@ function appendEvent(eventsContainer, event) {
                     <div class="media">
                         <img class="d-flex mr-5 event-img" src="${ event.imageUrl || "http://placehold.it/200x200" }" alt="">
                         <div class="media-body">
-                            <h5 class="event-name">${event.name}</h5>
+                            <h5 class="event-name">
+                                ${event.name}
+                                ${event.tags.map(tag => {
+                                    console.log(tag);
+                                    return `<span class="event-tag badge badge-pill badge-primary">${tag}</span>`;
+                                }).join(" ")}
+                            </h5>
                             <div class="event-description">
                                 <div class="datetime"><i class="fa fa-clock-o"></i> ${event.dateTime}</div>
                                 <div class="venue"><i class="fa fa-map-marker"></i> ${event.venue}</div>
